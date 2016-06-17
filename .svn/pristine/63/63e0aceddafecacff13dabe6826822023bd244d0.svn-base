@@ -1,0 +1,489 @@
+﻿<!doctype html>
+<!--[if lt IE 7 ]><html class="ie6" lang="zh-cn"><![endif]-->
+<!--[if IE 7 ]><html class="ie7" lang="zh-cn"><![endif]-->
+<!--[if IE 8 ]><html class="ie8" lang="zh-cn"><![endif]-->
+<!--[if IE 9 ]><html class="ie9" lang="zh-cn"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html class="" lang="zh-cn"><!--<![endif]--> 
+<head>
+<meta name="description" content="Dashboard" />
+<meta content="text/html;charset=utf-8;text/x-component" http-equiv="Content-Type">
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+<meta name="referrer" content="always">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>普伴资本加班系统-审批</title>
+
+<link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
+
+<link href="style/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+<link href="style/beyond.min.css" rel="stylesheet" type="text/css" />
+<link href="style/animate.min.css" rel="stylesheet" type="text/css"/>
+<link href="style/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+
+<link rel="stylesheet" type="text/css" href="style/common.css">
+<link rel="stylesheet" type="text/css" href="style/index.css">
+
+<!--让IE认得HTML5-->
+<!-–[if lt IE 9]--><script src="script/html5shiv.js "></script ><!--[endif]–- > 
+<!--[if IE]>
+<script>
+(function(){if(!/*@cc_on!@*/0)return;var e = "header,footer,nav,article,section".split(','),i=e.length;while(i--){document.createElement(e[i])}})()
+</script>
+<![endif]-->
+
+<!--让IE8-认得@media，上传服务器方可查看效果-->
+<script src="script/Respond-master/dest/respond.src.js"></script>
+
+<script src="script/skins.min.js"></script>
+</head>
+<!--Head Ends-->
+<!--Body-->
+<body class="y_index_bg">
+<div class="index_header clearfix ">
+    <a href="###" class="left logo"></a>
+    <div class="header_right right">
+        <span>您好！管理员</span>
+        <a href="###" class="exit">退出</a>
+    </div>
+</div>
+<div class="index_content">
+<div class="widget-header">
+    <span class="widget-caption">任务列表信息</span>
+    <a class="right export blue" href="#"><i class="fa fa-reply"> 导出表格</i></a>
+</div>
+<div class="widget-body ">
+    <div class="docs-example mg_t_20">
+        <ul class="nav nav-tabs tabs-flat">
+            <li class="active"><a href="#info-tab1" data-toggle="tab">加班申请审批</a></li>
+            <li class=""><a href="#info-tab2" data-toggle="tab">正常任务列表</a></li>
+            <li class=""><a href="#info-tab3" data-toggle="tab">分配任务列表</a></li>
+        </ul>
+        <form id="accountForm" method="post" class="form-horizontal bv-form" novalidate="novalidate">
+            <div class="tab-content tabs-flat">
+                <!-- 加班申请审批 -->
+                <div class="tab-pane active" id="info-tab1"">
+                    <div class="clearfix filter_bar">
+                        <div class="left filter_operation">
+                            <span class="left">筛选：</span>
+                            <select class="left">
+                                <option>全部申请人</option>
+                                <option>王春萍</option>
+                                <option>罗诗彬</option>
+                                <option>曾咏</option>
+                                <option>袁玥</option>
+                                <option>尹文萍</option>
+                            </select>
+                            <select class="left">
+                                <option>审批状态</option>
+                                <option>未审批</option>
+                                <option>已同意</option>
+                            </select>
+                        </div>
+                        <span class="my_overtime_time right"><u>部门</u> 加班总时长：<strong>10小时30分</strong></span>
+                    </div>
+                    
+                    <div class="index_search clearfix hide">
+                        <input type="search" placeholder="请输入关键词" class="left sch_input_search">
+                        <input type="button" class="left sch_input_btn" value="搜 索">
+                    </div>
+                    
+                    <div class="index_list clearfix">
+                        <table width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="">序号</th>
+                                    <th width="">申请人</th>
+                                    <th width="">开始加班时间</th>
+                                    <th width="">结束加班时间</th>
+                                    <th width="">加班时长</th>
+                                    <th width="">加班事由</th>
+                                    <th width="">审批状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>尹文萍</td>
+                                    <td>2016-06-04 18:00</td>
+                                    <td>2016-06-04 21:30</td>
+                                    <td>3小时30分</td>
+                                    <td>普贷通2.0首页、登录页设计</td>
+                                    <td class="untreated">未审批</td>
+                                    <td>
+                                        <a class="btn_feedback " href="#">同意</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>尹文萍</td>
+                                    <td>2016-06-03 18:00</td>
+                                    <td>2016-06-03 20:00</td>
+                                    <td>3小时</td>
+                                    <td>2.0设计首页+登录页，布局和bug处理</td>
+                                    <td class="processed">已同意</td>
+                                    <td>
+                                        <a class="btn_feedback forbidden" href="#">查看</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>尹文萍</td>
+                                    <td>2016-06-02 18:00</td>
+                                    <td>2016-06-02 19:20</td>
+                                    <td>2小时20分</td>
+                                    <td>2.0设计首页+登录页，布局和bug处理</td>
+                                    <td class="processed">已同意</td>
+                                    <td>
+                                        <a class="btn_feedback forbidden" href="#">查看</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <!-- start 翻页 -->
+                    <div class="DTTTFooter clearfix">
+                        <div class="DTTTFooter_left clearfix">
+                            <div class="dataTables_info left">共14条数据， 每页显示</div>
+                            <div class="dataTables_length left">
+                                <label>
+                                    <select class="form-control input-sm" name="searchable_length" aria-controls="searchable">
+                                        <option value="5">5 </option>
+                                        <option value="15">15 </option>
+                                        <option value="20">20 </option>
+                                        <option value="-1">所有</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="dataTables_info left">条</div>
+                        </div>
+                        <div class="DTTTFooter_right">
+                            <div class="dataTables_paginate paging_bootstrap">
+                                <ul class="pagination">
+                                    <li class="index disabled">
+                                        <a href="#">首页</a>
+                                    </li>
+                                    <li class="prev disabled">
+                                        <a href="#">上一页</a>
+                                    </li> 
+                                    <li class="active">
+                                        <a href="#">1</a>
+                                    </li> 
+                                    <li>
+                                        <a href="#">2</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">3</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">...</a>
+                                    </li>
+                                    <li class="next">
+                                        <a href="#">下一页</a>
+                                    </li> 
+                                    <li class="next">
+                                        <a href="#">尾页</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end 翻页 -->                    
+                </div>
+                <!-- end 加班申请审批 -->
+
+                <!-- 正常任务列表 -->
+                <div class="clearfix  tab-pane" id="info-tab2">
+                    <!-- <div class="clearfix index_list_title hide">
+                        <h2 class="">正常任务列表<span class="my_overtime_time right">正常任务总时长：<strong>10小时30分</strong></span></h2>        
+                    </div> -->
+                    <div class="clearfix filter_bar">
+                        <div class="left filter_operation">
+                            <span class="left">筛选：</span>
+                            <select class="left">
+                                <option>全部责任人</option>
+                                <option>王春萍</option>
+                                <option>罗诗彬</option>
+                                <option>曾咏</option>
+                                <option>袁玥</option>
+                                <option>尹文萍</option>
+                            </select>
+                            <select class="left">
+                                <option>审批状态</option>
+                                <option>未审批</option>
+                                <option>已同意</option>
+                            </select>
+                        </div>
+                        <span class="my_overtime_time right"><u>部门</u> 正常任务总时长：<strong>30小时30分</strong></span>
+                    </div>
+                    <div class="index_list">
+                        <table width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="">序号</th>
+                                    <th width="">任务标题</th>
+                                    <th width="">开始时间</th>
+                                    <th width="">结束时间</th>
+                                    <th width="">任务时长</th>
+                                    <th width="">任务内容</th>
+                                    <th width="">责任人</th>
+                                    <th>操作 </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>普贷通2.0需求分析</td>
+                                    <td>2016-06-04 18:00</td>
+                                    <td>2016-06-04 21:30</td>
+                                    <td>3小时30分</td>
+                                    <td>1、需求分析；2、列表详情</td>
+                                    <td >王春萍</td>
+                                    <td>
+                                        <a class="btn_feedback " href="#">修改</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>普贷通2.0需求分析</td>
+                                    <td>2016-06-03 18:00</td>
+                                    <td>2016-06-03 20:00</td>
+                                    <td>3小时</td>
+                                    <td>1、2.0设计首页+登录页，2、布局和bug处理</td>
+                                    <td >王春萍</td>
+                                    <td>
+                                        <a class="btn_feedback " href="#">修改</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>普贷通2.0需求分析</td>
+                                    <td>2016-06-02 18:00</td>
+                                    <td>2016-06-02 19:20</td>
+                                    <td>2小时20分</td>
+                                    <td>1、2.0设计首页+登录页，2、布局和bug处理</td>
+                                    <td >王春萍</td>
+                                    <td>
+                                        <a class="btn_feedback " href="#">修改</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <!-- start 翻页 -->
+                    <div class="DTTTFooter clearfix">
+                        <div class="DTTTFooter_left clearfix">
+                            <div class="dataTables_info left">共14条数据， 每页显示</div>
+                            <div class="dataTables_length left">
+                                <label>
+                                    <select class="form-control input-sm" name="searchable_length" aria-controls="searchable">
+                                        <option value="5">5 </option>
+                                        <option value="15">15 </option>
+                                        <option value="20">20 </option>
+                                        <option value="-1">所有</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="dataTables_info left">条</div>
+                        </div>
+                        <div class="DTTTFooter_right">
+                            <div class="dataTables_paginate paging_bootstrap">
+                                <ul class="pagination">
+                                    <li class="index disabled">
+                                        <a href="#">首页</a>
+                                    </li>
+                                    <li class="prev disabled">
+                                        <a href="#">上一页</a>
+                                    </li> 
+                                    <li class="active">
+                                        <a href="#">1</a>
+                                    </li> 
+                                    <li>
+                                        <a href="#">2</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">3</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">...</a>
+                                    </li>
+                                    <li class="next">
+                                        <a href="#">下一页</a>
+                                    </li> 
+                                    <li class="next">
+                                        <a href="#">尾页</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end 翻页 -->
+                </div>
+                <!-- end 正常任务列表 -->
+
+                <!-- 分配任务列表 -->
+                <div class="clearfix  tab-pane" id="info-tab3">
+                    <!-- <div class="clearfix index_list_title">
+                        <h2 class="">分配任务列表<span class="my_overtime_time right">分配任务总时长：<strong>30小时30分</strong></span></h2>        
+                    </div> -->
+                    <div class="clearfix filter_bar">
+                        <div class="left filter_operation">
+                            <span class="left">筛选：</span>
+                            <select class="left">
+                                <option>全部责任人</option>
+                                <option>王春萍</option>
+                                <option>罗诗彬</option>
+                                <option>曾咏</option>
+                                <option>袁玥</option>
+                                <option>尹文萍</option>
+                            </select>
+                            <select class="left">
+                                <option>审批状态</option>
+                                <option>未审批</option>
+                                <option>已同意</option>
+                            </select>
+                        </div>
+                        <span class="my_overtime_time right"><u>部门</u> 分配任务总时长：<strong>30小时30分</strong></span>
+                    </div>
+                    <div class="index_list">
+                        <table width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="">序号</th>
+                                    <th width="">任务标题</th>
+                                    <th width="">开始时间</th>
+                                    <th width="">结束时间</th>
+                                    <th width="">任务时长</th>
+                                    <th width="">任务内容</th>
+                                    <th width="">责任人</th> 
+                                    <th>操作 </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>普贷通2.0需求分析</td>
+                                    <td>2016-06-04 18:00</td>
+                                    <td>2016-06-04 21:30</td>
+                                    <td>3小时30分</td>
+                                    <td>1、需求分析；2、列表详情</td>
+                                    <td >王春萍</td>
+                                    <td>
+                                        <a class="btn_feedback " href="#">修改</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>普贷通2.0需求分析</td>
+                                    <td>2016-06-03 18:00</td>
+                                    <td>2016-06-03 20:00</td>
+                                    <td>3小时</td>
+                                    <td>1、2.0设计首页+登录页，2、布局和bug处理</td>
+                                    <td >尹文萍</td>
+                                    <td>
+                                        <a class="btn_feedback " href="#">修改</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>普贷通2.0需求分析</td>
+                                    <td>2016-06-02 18:00</td>
+                                    <td>2016-06-02 19:20</td>
+                                    <td>2小时20分</td>
+                                    <td>1、2.0设计首页+登录页，2、布局和bug处理</td>
+                                    <td >曾咏</td>
+                                    <td>
+                                        <a class="btn_feedback " href="#">修改</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <!-- start 翻页 -->
+                    <div class="DTTTFooter clearfix">
+                        <div class="DTTTFooter_left clearfix">
+                            <div class="dataTables_info left">共14条数据， 每页显示</div>
+                            <div class="dataTables_length left">
+                                <label>
+                                    <select class="form-control input-sm" name="searchable_length" aria-controls="searchable">
+                                        <option value="5">5 </option>
+                                        <option value="15">15 </option>
+                                        <option value="20">20 </option>
+                                        <option value="-1">所有</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="dataTables_info left">条</div>
+                        </div>
+                        <div class="DTTTFooter_right">
+                            <div class="dataTables_paginate paging_bootstrap">
+                                <ul class="pagination">
+                                    <li class="index disabled">
+                                        <a href="#">首页</a>
+                                    </li>
+                                    <li class="prev disabled">
+                                        <a href="#">上一页</a>
+                                    </li> 
+                                    <li class="active">
+                                        <a href="#">1</a>
+                                    </li> 
+                                    <li>
+                                        <a href="#">2</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">3</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">...</a>
+                                    </li>
+                                    <li class="next">
+                                        <a href="#">下一页</a>
+                                    </li> 
+                                    <li class="next">
+                                        <a href="#">尾页</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end 翻页 -->
+                </div>
+                <!-- end 分配任务列表 -->
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+<!-- 弹出层 -->
+<div class="bg_cover hide"></div>
+<div class="pop_content hide">
+    <div class="title clearfix">
+        <h3 class="left">审批意见</h3>
+        <a href="javascript(0);" class="right pop_close"></a>
+    </div>
+    <div class="pop_contents clearfix">
+        <span><strong>*</strong> 请填写意见：</span>
+        <input type="input" name="" />
+        
+    </div>
+    <input type="button" class="index_btn_submit" value="提 交" />
+</div>
+<!-- end 弹出层 -->
+
+<script src="script/jquery-1.8.2.js"></script>
+<script src="script/bootstrap.min.js"></script>
+<script src="script/beyond.min.js"></script>
+<script src="script/placeHolder.js"></script>
+
+<script type="text/javascript">
+    //--列表中的复选框、单选框、图像域 --
+    $(".checkbox_lg_default").toggle(function(){
+        $(this).removeClass("checkbox_lg_default").addClass("checkbox_lg_checked");
+    },function(){
+        $(this).removeClass("checkbox_lg_checked").addClass("checkbox_lg_default");
+    });
+</script>
+</body>
+</html>

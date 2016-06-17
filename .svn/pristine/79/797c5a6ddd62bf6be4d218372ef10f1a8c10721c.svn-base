@@ -1,0 +1,35 @@
+package com.puban.overtime.task.service.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.puban.framework.core.service.impl.BaseServiceImpl;
+import com.puban.overtime.task.dao.ITaskDao;
+import com.puban.overtime.task.model.Task;
+import com.puban.overtime.task.service.ITaskService;
+
+
+
+/*** 
+* @author wangchunping 
+* @date 2016年5月24日 上午10:43:51 
+* <p>Title:TaskServiceImpl </p>
+* <p>Description:任务实现类</p>
+*/
+@Service
+public class TaskServiceImpl extends BaseServiceImpl<Task> implements ITaskService
+{
+    @Resource
+    private ITaskDao taskDao;
+	
+	@Override
+	public List<Task> list()
+	{
+		List<Task> taskList=taskDao.query(Task.class).getResultlist();
+		return taskList;
+	}
+
+}

@@ -1,0 +1,27 @@
+package com.puban.overtime.authority.dao.impl;
+
+import com.puban.framework.core.dao.impl.BaseDaoImpl;
+import com.puban.overtime.authority.dao.IPermissionDao;
+import com.puban.overtime.authority.model.Permission;
+
+import java.util.List;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: PermissionDaoImpl
+ * @Description:
+ * @date: 2016/5/18
+ */
+
+public class PermissionDaoImpl extends BaseDaoImpl<Permission> implements IPermissionDao {
+
+    @Override
+    public Permission getPermissionById(List<Permission> permissionList, int id) {
+        for (Permission permission : permissionList) {
+            if (permission.getFdId().intValue() == id) {
+                return permission;
+            }
+        }
+        return null;
+    }
+}

@@ -1,0 +1,9 @@
+package com.puban.overtime.apply.dao;
+
+import com.puban.framework.core.dao.IBaseDao;
+import com.puban.overtime.apply.model.Apply;
+
+public interface IApplyDao extends IBaseDao<Apply>
+{
+	
+}

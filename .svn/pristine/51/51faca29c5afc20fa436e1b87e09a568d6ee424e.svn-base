@@ -1,0 +1,13 @@
+package com.puban.overtime.task.service;
+
+import com.puban.framework.core.page.QueryResult;
+import com.puban.framework.core.service.IBaseService;
+import com.puban.overtime.task.model.Task;
+
+public interface ITaskService extends IBaseService<Task>
+{
+
+	public QueryResult<Task> queryTaskList(Integer currentPage,Integer pageSzie);
+
+	public QueryResult<Task> queryMyTaskList(Integer currentPage,Integer pageSzie,Integer userId);
+}

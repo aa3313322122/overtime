@@ -1,0 +1,173 @@
+package com.puban.overtime.apply.controller;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.puban.framework.core.controller.BaseController;
+import com.puban.framework.core.page.PageView;
+import com.puban.overtime.apply.model.OverTime;
+import com.puban.overtime.apply.service.IApplyService;
+
+@Controller
+@RequestMapping(value="/apply")
+public class ApplyController extends BaseController
+{
+	@Autowired
+	IApplyService applyService;
+	
+	public void queryOverTime(Integer firstindex, Integer maxresult)
+	{
+		applyService.queryOverTime(firstindex, maxresult);
+	}
+	
+	@RequestMapping("/show")
+	public String showApply()
+	{
+		return "/view/apply/apply";
+	}
+	
+	@RequestMapping("/admin")
+	public String showAdmin()
+	{
+		return "/view/apply/approval";
+	}
+	
+	@RequestMapping("/add")
+	@ResponseBody
+	public String applyOverTime(OverTime overTime)
+	{
+		if(applyService.saveOverTime(overTime))
+		{
+			return "success";
+		}
+		return null;
+	}
+	
+	@RequestMapping(value="/findapply", method = RequestMethod.POST, produces =  {"application/json;charset=UTF-8"})
+	@ResponseBody
+	public String findApply(Integer applyId, Model model)
+	{
+		if(null == applyId)
+		{
+			return null;
+		}
+		OverTime overTime = applyService.findByPrimaryKey(applyId);
+		return JSONObject.toJSONString(overTime);
+	}
+	
+	/** 展示该用户的**/
+	@RequestMapping("/list")
+	public String queryOverTimeListByUser(Integer currentpage, Integer selectPageSize, Model model, HttpServletRequest request)
+	{
+		if(null == currentpage || currentpage < 1)
+		{
+			currentpage = 1;
+		}
+		if(null == selectPageSize || selectPageSize < 1)
+		{
+			selectPageSize = 5;
+		}
+		Integer userId = (Integer) request.getSession(false).getAttribute("loginId");
+		if(null == userId || userId <= 0)
+		{
+			return null;
+		}
+		PageView<OverTime> pageView = applyService.queryOverTimeByUser(userId, currentpage, selectPageSize);
+		model.addAttribute(pageView);
+		return "/view/apply/overtimeList";
+	}
+	
+	/** 管理员所选用户的任务**/
+	@RequestMapping("/listselectuser")
+	public String queryOverTimeListByUser(Integer userId, Integer currentpage, Integer selectPageSize, Model model)
+	{
+		if(null == currentpage || currentpage < 1)
+		{
+			currentpage = 1;
+		}
+		if(null == selectPageSize || selectPageSize < 1)
+		{
+			selectPageSize = 5;
+		}
+		PageView<OverTime> pageView = applyService.queryOverTimeByUser(userId, currentpage, selectPageSize);
+		model.addAttribute(pageView);
+		return "/view/apply/overtimeList_admin";
+	}
+	
+	/** 展示所有用户的**/
+	@RequestMapping("/listall")
+	public String queryOverTimeList(Integer currentpage, Integer selectPageSize, Model model)
+	{
+		if(null == currentpage || currentpage < 1)
+		{
+			currentpage = 1;
+		}
+		if(null == selectPageSize || selectPageSize < 1)
+		{
+			selectPageSize = 5;
+		}
+		PageView<OverTime> pageView = applyService.queryOverTime(currentpage, selectPageSize);
+		model.addAttribute(pageView);
+		return "/view/apply/overtimeList_admin";
+	}
+	
+	/** 根据审批状态和所选责任人展示所有用户的**/
+	@RequestMapping("/listbystatus")
+	public String queryOverTimeListByStatus(Integer status, Integer userId, Integer currentpage, Integer selectPageSize, Model model)
+	{
+		if(null == currentpage || currentpage < 1)
+		{
+			currentpage = 1;
+		}
+		if(null == selectPageSize || selectPageSize < 1)
+		{
+			selectPageSize = 5;
+		}
+		PageView<OverTime> pageView;
+		if(status < 0 && userId < 0)
+		{
+			pageView = applyService.queryOverTime(currentpage, selectPageSize);
+		}
+		else
+		{
+			pageView = applyService.queryOverTimeByStatus(status, userId, currentpage, selectPageSize);
+		}
+		model.addAttribute(pageView);
+		return "/view/apply/overtimeList_admin";
+	}
+	
+	/** 更新申请信息 **/
+	@RequestMapping("/update")
+	@ResponseBody
+	public String updateOverTime(OverTime overTime)
+	{
+		if(overTime.getFdStatus() == 0)
+		{
+			applyService.updateOverTime(overTime);
+			return "success";
+		}
+		return null;
+	}
+	
+	@RequestMapping("/updatestatus")
+	@ResponseBody
+	public String updateStatus(OverTime overTime)
+	{
+		if(overTime.getFdStatus() != 0)
+		{
+			OverTime o = applyService.findByPrimaryKey(overTime.getFdId());
+			o.setFdStatus(overTime.getFdStatus());
+			o.setFdAdvice(overTime.getFdAdvice());
+			applyService.update(o);
+			return "success";
+		}
+		return null;
+	}
+}

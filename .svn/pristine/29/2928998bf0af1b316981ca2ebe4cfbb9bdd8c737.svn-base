@@ -1,0 +1,6 @@
+#mysql database  
+jdbc.driverClass=com.mysql.jdbc.Driver
+jdbc.jdbcUrl=jdbc:mysql://192.168.1.187:3306/urp?useUnicode=true&characterEncoding=UTF-8
+jdbc.user=root
+jdbc.password=yongsama
+jdbc.initializedatabase = true

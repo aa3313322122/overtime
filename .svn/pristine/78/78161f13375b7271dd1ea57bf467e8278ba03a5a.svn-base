@@ -1,0 +1,172 @@
+package com.puban.overtime.authority.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.puban.framework.core.controller.BaseController;
+import com.puban.framework.core.page.PageView;
+import com.puban.framework.core.page.QueryResult;
+import com.puban.overtime.authority.model.Role;
+import com.puban.overtime.authority.model.User;
+import com.puban.overtime.authority.service.IRoleService;
+import com.puban.overtime.authority.service.IUserService;
+import com.puban.overtime.authority.shiro.ResultVO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: UserManageController
+ * @Description: 用户管理
+ * @date: 2016/5/24
+ */
+@Controller
+@RequestMapping(value = "/user")
+public class UserManageController extends BaseController {
+    @Autowired
+    private IUserService userService;
+
+    @Autowired
+    private IRoleService roleService;
+
+    /**
+     * 用户列表信息展示
+     */
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public String list(Model model) {
+        PageView<User> pageView = userService.queryBySerach(null, 0);
+        model.addAttribute("pageView", pageView);
+        return "view/authority/userManage";
+    }
+
+    /**
+     * 所有用户list
+     */
+    @RequestMapping(value = "/userinfo", method = RequestMethod.POST, produces =  {"application/json;charset=UTF-8"})
+    @ResponseBody
+    public String userinfo(Model model) {
+        List<User> user = userService.query().getResultlist();
+        return JSONObject.toJSONString(user);
+    }
+
+    /**
+     * 用户列表信息展示
+     * @param currentpage
+     * @return
+     */
+    @RequestMapping(value = "/userList", method = RequestMethod.POST)
+    @ResponseBody
+    public String userList(String username, Integer currentpage, Model model) {
+        /** 根据状态查询分页数据 **/
+        PageView<User> pageView = userService.queryBySerach(username,currentpage);
+        model.addAttribute("pageView", pageView);
+        if (username != null && !username.equals("")) {
+            model.addAttribute("username", username);
+        }
+        /*查询所有角色*/
+        QueryResult<User> queryResult = userService.query();
+        model.addAttribute("role", queryResult);
+        return "view/authority/userManage";
+    }
+
+    /**
+     * 编辑用户页面
+     */
+    @RequestMapping(value = "/edit", method = RequestMethod.GET)
+    public String edit(Integer id, Model model) {
+        User user = userService.findByPrimaryKey(id);
+        model.addAttribute("user", user);
+        List<Role> roles = roleService.query().getResultlist();
+        model.addAttribute("roles", roles);
+        model.addAttribute("action", "edituser");
+        return "view/authority/uedit";
+    }
+
+    /**
+     * 修改保存用户
+     * @return 结果
+     */
+    @RequestMapping(value = "/edituser", method = RequestMethod.POST)
+    @ResponseBody
+    public void edituser(User user, Integer roleId[], HttpServletResponse response) {
+        ResultVO result = new ResultVO();
+      /*  User checkUser = userService.getUserInfoByName(user.getFdUserName());
+        if (checkUser.getFdUserName()!=null) {
+            result.setMsg("编辑用户失败，登录名重复");
+            result.setOk(false);
+        }*/
+        if(result.isOk()){
+            try {
+                userService.update(user, roleId);
+                result.setMsg("修改用户成功");
+            } catch (Exception e) {
+                result.setMsg("修改用户失败"+e);
+            }
+        }
+
+        ajaxJson(JSON.toJSONString(result), response);
+
+
+
+    }
+
+    /**
+     * 新增用户页面
+     */
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    public String add(Model model) {
+        List<Role> roles = roleService.query().getResultlist();
+        model.addAttribute("roles", roles);
+        model.addAttribute("action", "saveuser");
+        return "view/authority/uedit";
+    }
+
+    /**
+     * 保存用户
+     * @return 结果
+     */
+    @RequestMapping(value = "/saveuser", method = RequestMethod.POST)
+    public void saveuser(User user, Integer roleId[], HttpServletResponse response) {
+        ResultVO result = new ResultVO();
+        User checkUser = userService.getUserInfoByName(user.getFdUserName());
+        if (null!=checkUser.getFdUserName()) {
+             result.setMsg("新增用户失败，登录名重复");
+            result.setOk(false);
+        }
+        if(result.isOk()){
+            try {
+                userService.save(user, roleId);
+                result.setMsg("新增用户成功");
+            } catch (Exception e) {
+                result.setMsg("新增用户失败"+e);
+                result.setOk(false);
+            }
+        }
+
+        ajaxJson(JSON.toJSONString(result), response);
+    }
+
+    /**
+     * 删除用户
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public void delete(Integer id, HttpServletResponse response) {
+        ResultVO result = new ResultVO();
+        try {
+            userService.delete(id);
+            result.setMsg("删除用户成功");
+        } catch (Exception e) {
+            result.setMsg("删除用户失败"+e);
+            result.setOk(false);
+        }
+        ajaxJson(JSON.toJSONString(result), response);
+    }
+
+}
+

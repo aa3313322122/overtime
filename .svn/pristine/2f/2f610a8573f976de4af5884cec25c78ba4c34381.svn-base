@@ -1,0 +1,107 @@
+package com.puban.overtime.task.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.puban.framework.core.page.QueryResult;
+import com.puban.framework.core.service.impl.BaseServiceImpl;
+import com.puban.overtime.task.dao.ITaskDao;
+import com.puban.overtime.task.model.Task;
+import com.puban.overtime.task.service.ITaskService;
+
+
+/*** 
+* @author wangchunping 
+* @date 2016年5月25日 上午9:40:43 
+* <p>Title:TaskServiceImpl </p>
+* <p>Description:任务实现类 </p>
+*/
+@Service
+public class TaskServiceImpl extends BaseServiceImpl<Task> implements ITaskService
+{
+	@Resource
+	private ITaskDao taskDao;
+
+	/**
+	* @author wangchunping
+	* @date 2016年5月24日 上午11:21:45
+	* <p>Description: 查询出所有任务</p>
+	* <p>Paramter:currentPage 当前页, pageSzie每页显示记录数 </p>
+	* <p>Return: 返回任务分页列表对象QueryResult<Task></p>
+	*/
+	@Override
+	public QueryResult<Task> queryTaskList(Integer currentPage, Integer pageSzie)
+	{
+		QueryResult<Task> taskListPage = taskDao.query(Task.class, (currentPage - 1) * pageSzie, pageSzie);
+		return taskListPage;
+	}
+
+	/**
+	* @author wangchunping
+	* @date 2016年5月24日 上午11:23:04
+	* <p>Description:查询我的所有任务 </p>
+	* <p>Paramter:currentPage 当前页, pageSzie每页显示记录数 ,userId当前用户ID </p>
+	* <p>Return: 返回任务分页列表对象QueryResult<Task></p>
+	*/
+	@Override
+	public QueryResult<Task> queryMyTaskList(Integer currentPage, Integer pageSzie, Integer userId)
+	{
+		List<Object> queryParams = new ArrayList<Object>();
+		StringBuffer sb = new StringBuffer("");
+		sb.append(" 1=1 ");
+		if (userId > 0)
+		{
+			int index = queryParams.size() + 1;
+			sb.append(" and user.fdId=:p" + index).append(" ");
+			queryParams.add(userId);
+		}
+		QueryResult<Task> myTaskListPage = taskDao.query(Task.class, (currentPage - 1) * pageSzie, pageSzie, sb.toString(), queryParams.toArray());
+		return myTaskListPage;
+	}
+
+	/**
+	* @author wangchunping
+	* @date 2016年5月24日 上午11:23:04
+	* <p>Description:查询我的所有任务 </p>
+	* <p>Paramter:currentPage 当前页, pageSzie每页显示记录数 ,userId当前用户ID </p>
+	* <p>Return: 返回任务分页列表对象QueryResult<Task></p>
+	*/
+	@Override
+	public List<Task> queryTaskList()
+	{
+		List<Task> taskList=taskDao.query(Task.class).getResultlist();
+		return taskList;
+	}
+
+	/**
+	* @author wangchunping
+	* @date 2016年5月24日 上午11:23:04
+	* <p>Description:查询我的所有任务 </p>
+	* <p>Paramter:userId当前用户ID </p>
+	* <p>Return: 返回任务列表List<Task></p>
+	*/
+	@Override
+	public List<Task> queryMyTaskList(Integer userId)
+	{
+		return taskDao.queryMyTaskList(userId);
+	}
+
+	
+	/**
+	* @author wangchunping
+	* @date 2016年5月24日 下午3:15:48
+	* <p>Description:根据任务编号查找任务 </p>
+	* <p>Paramter:code任务唯一code </p>
+	* <p>Return: 返回任务Task</p>
+	*/
+	@Override
+	public Task queryMyTaskByCode(String code)
+	{
+		return taskDao.queryMyTaskByCode(code);
+	}
+
+}

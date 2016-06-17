@@ -1,0 +1,20 @@
+package com.puban.overtime.apply.service;
+
+import com.puban.framework.core.page.PageView;
+import com.puban.framework.core.service.IBaseService;
+import com.puban.overtime.apply.model.OverTime;
+
+public interface IApplyService extends IBaseService<OverTime>
+{
+	public PageView<OverTime> queryOverTime(Integer currentpage, Integer maxresult);
+	
+	public PageView<OverTime> queryOverTimeByUser(Integer userId, Integer currentpage, Integer maxresult);
+	
+	public PageView<OverTime> queryOverTimeByStatus(Integer status, Integer userId,  Integer currentpage, Integer maxresult);
+	
+	public boolean saveOverTime(OverTime overTime);
+
+	public void updateOverTime(OverTime overTime);
+	
+	public String findListByTaskId(Integer taskId);
+}

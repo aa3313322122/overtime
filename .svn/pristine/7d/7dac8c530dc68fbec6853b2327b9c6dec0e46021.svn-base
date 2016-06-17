@@ -1,0 +1,81 @@
+package com.puban.overtime.authority.controller;
+
+import com.puban.framework.core.page.PageView;
+import com.puban.framework.core.page.QueryResult;
+import com.puban.overtime.authority.model.User;
+import com.puban.overtime.authority.service.IUserRoleService;
+import com.puban.overtime.authority.service.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: UserManageController
+ * @Description: 用户管理
+ * @date: 2016/5/24
+ */
+@Controller
+@RequestMapping(value = "/user")
+public class UserManageController {
+    @Autowired
+    private IUserService userService;
+
+    @Autowired
+    private IUserRoleService userRoleService;
+    /**
+     * 用户列表信息展示
+     * @param currentpage
+     * @return
+     */
+    @RequestMapping(value = "/userList", method = RequestMethod.POST)
+    @ResponseBody
+    public String userList(String username, Integer currentpage, Model model) {
+        /** 根据状态查询分页数据 **/
+        PageView<User> pageView = userService.queryBySerach(username,currentpage);
+        model.addAttribute("pageView", pageView);
+        if (username != null && !username.equals("")) {
+            model.addAttribute("username", username);
+        }
+        /*查询所有角色*/
+        QueryResult<User> queryResult = userService.query();
+        model.addAttribute("role", queryResult);
+        return "view/userManage";
+    }
+
+    /**
+     *新增用户
+     * @return
+     */
+    @RequestMapping(value = "/addUser", method = RequestMethod.POST)
+    @ResponseBody
+    public String addUser(String fdUserName,String fdPassword, Integer roleId, Model model) {
+       /* User user = userService.save(fdUserName,fdPassword);
+        Integer usrId = user.getFdId();
+        *//*新增用户角色表*//*
+        userRoleService.save(usrId,roleId);*/
+        return "view/userManage";
+    }
+
+
+/*    *//**
+     *条件查询
+     * @param currentpage
+     * @return
+     *//*
+    @RequestMapping(value = "/findUsername", method = RequestMethod.POST)
+    @ResponseBody
+    public String findUsername(String username, Integer currentpage, Model model) {
+        *//** 根据状态查询分页数据 **//*
+        PageView<User> pageView = userService.queryBySerach(username, currentpage);
+        model.addAttribute("pageView", pageView);
+        if (username != null && !username.equals("")) {
+            model.addAttribute("username", username);
+        }
+        return "view/userManage";
+    }*/
+}
+

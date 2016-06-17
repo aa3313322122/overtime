@@ -1,0 +1,123 @@
+package com.puban.overtime.apply.service.impl;
+
+import java.util.LinkedHashMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.puban.framework.core.page.PageView;
+import com.puban.framework.core.page.QueryResult;
+import com.puban.framework.core.service.impl.BaseServiceImpl;
+import com.puban.overtime.apply.model.OverTime;
+import com.puban.overtime.apply.service.IApplyService;
+import com.puban.overtime.authority.model.User;
+import com.puban.overtime.authority.service.IUserService;
+import com.puban.overtime.task.model.Task;
+import com.puban.overtime.task.service.ITaskService;
+
+@Service
+public class ApplyServiceImpl extends BaseServiceImpl<OverTime> implements IApplyService
+{
+	@Autowired
+	IUserService userService;
+
+	@Autowired
+	ITaskService taskService;
+
+	/** 加班申请 **/
+	public boolean saveOverTime(OverTime overTime)
+	{
+		User user = null;
+		Task task = null;
+		if(null == (user = overTime.getUser()))
+		{
+			return false;
+		}
+		if(null == (task = overTime.getTask()))
+		{
+			return false;
+		}
+		
+		String userName = user.getFdUserName();
+		if((null == userName || "".equals(userName)))
+		{
+			return false;
+		}
+		String taskCode = task.getFdTaskCode();
+		if((null == taskCode || "".equals(taskCode)))
+		{
+			return false;
+		}
+		user = userService.getUserInfoByName(userName);
+		Integer userId = null;
+		if(null == user || null == (userId = user.getFdId()))
+		{
+			return false;
+		}
+		task = taskService.queryMyTaskByCode(userName);
+		Integer taskId = null;
+		if(null == task || null == (taskId = task.getFdId()))
+		{
+			return false;
+		}
+		overTime = selectUser(userId, overTime);
+		overTime = selectTask(taskId, overTime);
+		if (null != overTime)
+		{
+			this.save(overTime);
+			return true;
+		}
+		return false;
+	}
+	
+	public PageView<OverTime> queryOverTime(Integer currentpage, Integer maxresult)
+	{
+		LinkedHashMap<String, String> orderby = new LinkedHashMap<String, String>();
+		orderby.put("fdStartTime", "desc");
+		QueryResult<OverTime> result = this.query((currentpage-1)*maxresult + 1, maxresult, null, null, orderby);
+		PageView<OverTime> pageView = new PageView<OverTime>(maxresult, currentpage);
+		pageView.setQueryResult(result);
+		return pageView;
+	}
+
+	/** 根据申请人查询加班申请 **/
+	public QueryResult<OverTime> queryOverTimeByUser(Integer userId, Integer firstindex, Integer maxresult)
+	{
+		String wheresql = "user_id = '" + userId + "'";
+		LinkedHashMap<String, String> orderby = new LinkedHashMap<String, String>();
+		orderby.put("fdStartTime", "desc");
+		return this.query(firstindex, maxresult, wheresql, null, orderby);
+	}
+
+	/** 根据审批状态查询加班申请 **/
+	public QueryResult<OverTime> queryOverTimeByStatus(Integer status, Integer firstindex, Integer maxresult)
+	{
+		String hql = "fd_status = '" + status + "'";
+		LinkedHashMap<String, String> orderby = new LinkedHashMap<String, String>();
+		orderby.put("fdStartTime", "desc");
+		return this.query(firstindex, maxresult, hql, null, orderby);
+	}
+
+	private OverTime selectUser(Integer userId, OverTime overTime)
+	{
+		User user = userService.findByPrimaryKey(userId);
+		if (null != user)
+		{
+			overTime.setUser(user);
+			return overTime;
+		}
+		return null;
+	}
+
+	private OverTime selectTask(Integer taskId, OverTime overTime)
+	{
+		Task task = taskService.findByPrimaryKey(taskId);
+		if (null != task)
+		{
+			overTime.setTask(task);
+			return overTime;
+		}
+		return null;
+	}
+
+}

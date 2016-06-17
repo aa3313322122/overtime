@@ -1,0 +1,152 @@
+package com.puban.overtime.authority.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.puban.framework.core.controller.BaseController;
+import com.puban.framework.core.page.PageView;
+import com.puban.overtime.authority.model.Role;
+import com.puban.overtime.authority.service.IRoleService;
+import com.puban.overtime.authority.shiro.ResultVO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: RoleManageController
+ * @Description:角色管理
+ * @date: 2016/5/24
+ */
+@Controller
+@RequestMapping(value = "/role")
+public class RoleManageController extends BaseController {
+    @Autowired
+    private IRoleService roleService;
+
+    /**
+     *角色列表信息展示
+     * @param currentpage
+     * @return
+     */
+    @RequestMapping(value = "/roleList", method = RequestMethod.POST)
+    public String roleList(String roleName, Integer currentpage, Model model) {
+        /** 根据状态查询分页数据 **/
+        PageView<Role> pageView = roleService.queryBySerach(roleName, currentpage);
+        model.addAttribute("pageView", pageView);
+        if (roleName != null && !roleName.equals("")) {
+            model.addAttribute("roleName", roleName);
+        }
+        return "view/authorty/roleManage";
+    }
+
+    /**
+     * 角色列表信息展示
+     */
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public String list(Model model) {
+        PageView<Role> pageView = roleService.queryBySerach(null, 0);
+        model.addAttribute("pageView", pageView);
+        return "view/authority/roleManage";
+    }
+
+    /**
+     * 新增角色页面
+     */
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    public String add(Model model) {
+        model.addAttribute("action", "addRole");
+        return "view/authority/redit";
+    }
+
+    /**
+     * 新增角色
+     * @return
+     */
+    @RequestMapping(value = "/addRole", method = RequestMethod.POST)
+    public void addRole(Role role, Model model, HttpServletResponse response) {
+        ResultVO result = new ResultVO();
+        Role checkRoleKey = roleService.getRoleByKey(role.getFdRoleKey());
+        if (null != checkRoleKey.getFdId()) {
+            result.setMsg("新增角色失败,角色Key重复");
+            result.setOk(false);
+        }
+        Role checkRoleName = roleService.getRoleByName(role.getFdRoleName());
+        if (null != checkRoleName.getFdId()) {
+            result.setMsg("新增角色失败,角色名称重复");
+            result.setOk(false);
+        }
+        if(result.isOk()){
+            try {
+                roleService.save(role);
+                result.setMsg("新增角色成功");
+            } catch (Exception e) {
+                result.setMsg("新增角色失败");
+                result.setOk(false);
+            }
+        }
+        ajaxJson(JSON.toJSONString(result), response);
+    }
+
+    /**
+     * 编辑角色页面
+     *
+     * @return
+     */
+    @RequestMapping(value = "/edit", method = RequestMethod.GET)
+    public String edit(Integer id, Model model) {
+        Role role = roleService.findByPrimaryKey(id);
+        model.addAttribute("action", "editRole");
+        model.addAttribute("role", role);
+        return "view/authority/redit";
+    }
+
+    /**
+     * 保存角色
+     */
+    @RequestMapping(value = "/editRole", method = RequestMethod.POST)
+    public void editRole(Role role, HttpServletResponse response) {
+        ResultVO result = new ResultVO();
+        Role checkRoleKey = roleService.getRoleByKey(role.getFdRoleKey());
+        if (null != checkRoleKey && checkRoleKey.getFdId() != role.getFdId()) {
+            result.setMsg("新增角色失败,角色Key重复");
+            result.setOk(false);
+        }
+        Role checkRoleName = roleService.getRoleByName(role.getFdRoleName());
+        if (null != checkRoleName && checkRoleKey.getFdId() != role.getFdId()) {
+            result.setMsg("新增角色失败,角色名称重复");
+            result.setOk(false);
+        }
+        if (result.isOk()) {
+            try {
+                roleService.update(role);
+                result.setMsg("角色修改成功");
+            } catch (Exception e) {
+                result.setMsg("角色修改失败");
+                result.setOk(false);
+            }
+        }
+
+        ajaxJson(JSON.toJSONString(result), response);
+    }
+
+    /**
+     * 删除角色
+     * @param id 角色ID
+     * @return 结果
+     */
+    @RequestMapping("/delete")
+    public void delete(Integer id, HttpServletResponse response) {
+        ResultVO result = new ResultVO();
+        try {
+            roleService.delete(id);
+            result.setMsg("删除成功");
+        } catch (Exception e) {
+            result.setMsg("删除失败");
+            result.setOk(false);
+        }
+        ajaxJson(JSON.toJSONString(result), response);
+    }
+}

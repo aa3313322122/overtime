@@ -1,0 +1,15 @@
+package com.puban.overtime.authority.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: PermissionController
+ * @Description: 权限
+ * @date: 2016/5/25
+ */
+@Controller
+@RequestMapping(value = "/permission")
+public class PermissionManageController {
+}

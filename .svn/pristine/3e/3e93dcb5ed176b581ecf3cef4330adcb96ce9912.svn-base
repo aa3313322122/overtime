@@ -1,0 +1,21 @@
+package com.puban.overtime.apply.service.impl;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.puban.framework.core.service.impl.BaseServiceImpl;
+import com.puban.overtime.apply.dao.IApplyDao;
+import com.puban.overtime.apply.model.Apply;
+import com.puban.overtime.apply.model.OverTime;
+import com.puban.overtime.apply.service.IApplyService;
+
+@Service("applyService")
+public class ApplyServiceImpl extends BaseServiceImpl<OverTime> implements IApplyService
+{
+	@Resource
+	private IApplyDao applyDao;
+	
+	
+
+}

@@ -1,0 +1,192 @@
+package com.puban.overtime.task.model;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import com.puban.framework.core.model.BaseModel;
+import com.puban.overtime.authority.model.User;
+
+@Entity
+@Table(name = "t_task")
+public class Task extends BaseModel
+{
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer fdId;
+
+	/** 任务编号 **/
+	@Column(name = "fd_task_code")
+	private String fdTaskCode;
+
+	/** 任务主题 **/
+	@Column(name = "fd_task_name")
+	private String fdTaskName;
+
+	/** 任务内容 **/
+	@Column(name = "fd_task_content")
+	private String fdTaskContent;
+
+	/** 任务预计开始时间 **/
+	@Column(name = "fd_start_time")
+	private Date fdStartTime;
+
+	/** 任务预计结束时间 **/
+	@Column(name = "fd_end_time")
+	private Date fdEndTime;
+
+	/** 任务预计消耗时长 **/
+	@Column(name = "fd_task_time")
+	private long fdTaskTime;
+
+	/** 任务实际完成时间 **/
+	@Column(name = "fd_finish_time")
+	private Date fdFinishTime;
+
+	/** 任务实际消耗时长 **/
+	@Column(name = "fd_actual_time")
+	private long fdActualTime;
+
+	/** 任务创建时间 **/
+	@Column(name = "fd_create_time")
+	private Date fdCreateTime;
+
+	/** 任务其他描述 **/
+	@Column(name = "fd_other_desc")
+	private String fdOtherDesc;
+
+	/** 任务接受者(一个任务分配给一个用户) **/
+	@JoinColumn(name = "fd_user_id")
+	@ManyToOne
+	private User user;
+
+	public Integer getFdId()
+	{
+		return fdId;
+	}
+
+	public void setFdId(Integer fdId)
+	{
+		this.fdId = fdId;
+	}
+
+	public String getFdTaskName()
+	{
+		return fdTaskName;
+	}
+
+	public void setFdTaskName(String fdTaskName)
+	{
+		this.fdTaskName = fdTaskName;
+	}
+
+	public String getFdTaskContent()
+	{
+		return fdTaskContent;
+	}
+
+	public void setFdTaskContent(String fdTaskContent)
+	{
+		this.fdTaskContent = fdTaskContent;
+	}
+
+	public Date getFdStartTime()
+	{
+		return fdStartTime;
+	}
+
+	public void setFdStartTime(Date fdStartTime)
+	{
+		this.fdStartTime = fdStartTime;
+	}
+
+	public Date getFdEndTime()
+	{
+		return fdEndTime;
+	}
+
+	public void setFdEndTime(Date fdEndTime)
+	{
+		this.fdEndTime = fdEndTime;
+	}
+
+	public long getFdTaskTime()
+	{
+		return fdTaskTime;
+	}
+
+	public void setFdTaskTime(long fdTaskTime)
+	{
+		this.fdTaskTime = fdTaskTime;
+	}
+
+	public Date getFdFinishTime()
+	{
+		return fdFinishTime;
+	}
+
+	public void setFdFinishTime(Date fdFinishTime)
+	{
+		this.fdFinishTime = fdFinishTime;
+	}
+
+	public long getFdActualTime()
+	{
+		return fdActualTime;
+	}
+
+	public void setFdActualTime(long fdActualTime)
+	{
+		this.fdActualTime = fdActualTime;
+	}
+
+	public Date getFdCreateTime()
+	{
+		return fdCreateTime;
+	}
+
+	public void setFdCreateTime(Date fdCreateTime)
+	{
+		this.fdCreateTime = fdCreateTime;
+	}
+
+	public String getFdOtherDesc()
+	{
+		return fdOtherDesc;
+	}
+
+	public void setFdOtherDesc(String fdOtherDesc)
+	{
+		this.fdOtherDesc = fdOtherDesc;
+	}
+
+	public User getUser()
+	{
+		return user;
+	}
+
+	public void setUser(User user)
+	{
+		this.user = user;
+	}
+
+	public String getFdTaskCode()
+	{
+		return fdTaskCode;
+	}
+
+	public void setFdTaskCode(String fdTaskCode)
+	{
+		this.fdTaskCode = fdTaskCode;
+	}
+
+}

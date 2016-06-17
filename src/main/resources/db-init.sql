@@ -1,0 +1,253 @@
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : com.mysql.jdbc.Driver
+Source Server Version : 50624
+Source Host           : localhost:3306
+Source Database       : urp
+
+Target Server Type    : MYSQL
+Target Server Version : 50624
+File Encoding         : 65001
+
+Date: 2016-05-31 17:28:02
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for t_user_info
+-- ----------------------------
+DROP TABLE IF EXISTS `t_user_info`;
+CREATE TABLE `t_user_info` (
+  `fd_id` int(11) NOT NULL AUTO_INCREMENT,
+  `fd_password` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `fd_user_name` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `fd_email` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `fd_mobile_phone` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  PRIMARY KEY (`fd_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of t_user_info
+-- ----------------------------
+INSERT INTO `t_user_info` VALUES ('1', 'xuwei', 'xuwei', 'xuwei@puban.com', '13902870343');
+INSERT INTO `t_user_info` VALUES ('16', 'yuanyue', 'yuanyue', 'yuanyue@puban.com', '13418532447');
+INSERT INTO `t_user_info` VALUES ('17', 'zengyong', 'zengyong', 'zengyong@puban.com', '15118133024');
+INSERT INTO `t_user_info` VALUES ('18', 'yinwenping', 'yinwenping', 'yinwenping@puban.com', '13129566528');
+INSERT INTO `t_user_info` VALUES ('19', 'wangchunping', 'wangchunping', 'wangchunping@puban.com', '13723709596');
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for t_role_info
+-- ----------------------------
+DROP TABLE IF EXISTS `t_role_info`;
+CREATE TABLE `t_role_info` (
+  `fd_id` int(11) NOT NULL AUTO_INCREMENT,
+  `fd_role_key` varchar(255) DEFAULT NULL,
+  `fd_role_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `fd_role_status` int(11) DEFAULT NULL,
+  PRIMARY KEY (`fd_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of t_role_info
+-- ----------------------------
+INSERT INTO `t_role_info` VALUES ('1', 'admin', '管理员', '1');
+INSERT INTO `t_role_info` VALUES ('6', 'dest', '分配者', null);
+INSERT INTO `t_role_info` VALUES ('7', 'staff', '普通员工', null);
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for t_permission_info
+-- ----------------------------
+DROP TABLE IF EXISTS `t_permission_info`;
+CREATE TABLE `t_permission_info` (
+  `fd_id` int(11) NOT NULL AUTO_INCREMENT,
+  `fd_orders` int(11) DEFAULT NULL,
+  `fd_p_parent_id` int(11) DEFAULT NULL,
+  `fd_permission_key` varchar(255) DEFAULT NULL,
+  `fd_permission_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `fd_url` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  PRIMARY KEY (`fd_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of t_permission_info
+-- ----------------------------
+INSERT INTO `t_permission_info` VALUES ('9', '999', '0', 'user', '用户管理', '/user');
+INSERT INTO `t_permission_info` VALUES ('10', '999', '9', 'list', ' 用户列表信息展示', '/user/list');
+INSERT INTO `t_permission_info` VALUES ('11', '999', '9', 'userinfo', '所有用户list', '/user/userinfo');
+INSERT INTO `t_permission_info` VALUES ('12', '999', '9', 'userList', '条件查询用户列表信息展示', '/user/userList');
+INSERT INTO `t_permission_info` VALUES ('14', '999', '9', 'edit', '编辑用户界面', '/user/edit');
+INSERT INTO `t_permission_info` VALUES ('15', '999', '9', 'edituser', '保存修改操作', '/user/edituser');
+INSERT INTO `t_permission_info` VALUES ('16', '999', '9', 'add', '新增用户界面', '/user/add');
+INSERT INTO `t_permission_info` VALUES ('17', '999', '9', 'saveuser', '保存用户操作', '/user/saveuser');
+INSERT INTO `t_permission_info` VALUES ('18', '999', '9', 'delete', '删除用户', '/user/delete');
+INSERT INTO `t_permission_info` VALUES ('19', '999', '0', 'role', '角色管理', '/role');
+INSERT INTO `t_permission_info` VALUES ('20', '999', '19', 'roleList', '条件查询角色列表信息展示', '/role/roleList');
+INSERT INTO `t_permission_info` VALUES ('22', '999', '19', 'list', ' 角色列表信息展示', '/role/list');
+INSERT INTO `t_permission_info` VALUES ('23', '999', '19', 'roleadd', '新增角色页面', '/role/add');
+INSERT INTO `t_permission_info` VALUES ('26', '999', '19', 'addRole', '新增角色信息', '/role/addRole');
+INSERT INTO `t_permission_info` VALUES ('27', '999', '19', 'roleedit', '编辑角色页面', '/role/edit');
+INSERT INTO `t_permission_info` VALUES ('28', '999', '19', 'editRole', '编辑角色信息', '/role/editRole');
+INSERT INTO `t_permission_info` VALUES ('29', '999', '19', 'roledelete', '删除角色', '/role/delete');
+INSERT INTO `t_permission_info` VALUES ('30', '999', '0', 'permission', '权限管理', '/permission');
+INSERT INTO `t_permission_info` VALUES ('31', '999', '30', 'plist', '权限信息列表展示', '/permission/plist');
+INSERT INTO `t_permission_info` VALUES ('32', '999', '30', 'permissionList', '条件查询权限信息列表展示', '/permission/list');
+INSERT INTO `t_permission_info` VALUES ('33', '999', '30', 'padd', '新增权限跳转页面', '/permission/add');
+INSERT INTO `t_permission_info` VALUES ('34', '999', '30', 'saveadd', '保存权限操作', '/permission/saveadd');
+INSERT INTO `t_permission_info` VALUES ('35', '999', '30', 'pdelete', ' 删除权限', '/permission/delete');
+INSERT INTO `t_permission_info` VALUES ('36', '999', '30', 'pedit', '编辑权限页面', '/permission/edit');
+INSERT INTO `t_permission_info` VALUES ('37', '999', '30', 'psaveedit', '保存权限编辑操作', '/permission/saveedit');
+INSERT INTO `t_permission_info` VALUES ('38', '999', '30', 'authorization', '进入权限分配界面', '/permission/authorization');
+INSERT INTO `t_permission_info` VALUES ('39', '999', '30', 'get_role_per', '在权限分配页面获取角色权限', '/permission/get_role_per');
+INSERT INTO `t_permission_info` VALUES ('40', '999', '30', 'add_role_per', '角色分配权限', '/permission/add_role_per');
+INSERT INTO `t_permission_info` VALUES ('41', '999', '0', 'apply', '加班申请', '/apply');
+INSERT INTO `t_permission_info` VALUES ('42', '999', '41', 'show', '普通员工登陆显示界面', '/apply/show');
+INSERT INTO `t_permission_info` VALUES ('43', '999', '41', 'admin', '管理员登陆显示界面', '/apply/admin');
+INSERT INTO `t_permission_info` VALUES ('44', '999', '41', 'applyadd', '新建加班', '/apply/add');
+INSERT INTO `t_permission_info` VALUES ('45', '999', '41', 'findapply', '查询加班', '/apply/findapply');
+INSERT INTO `t_permission_info` VALUES ('46', '999', '41', 'userapplylist', '显示该用户的加班list', '/apply/list');
+INSERT INTO `t_permission_info` VALUES ('47', '999', '41', 'listselectuser', '管理员所选用户的任务', '/apply/listselectuser');
+INSERT INTO `t_permission_info` VALUES ('48', '999', '41', 'listall', '展示所有用户的', '/apply/listall');
+INSERT INTO `t_permission_info` VALUES ('49', '999', '41', 'listbystatus', '根据审批状态和所选责任人展示所有用户的', '/apply/listbystatus');
+INSERT INTO `t_permission_info` VALUES ('50', '999', '41', 'applyupdate', ' 更新申请信息', '/apply/update');
+INSERT INTO `t_permission_info` VALUES ('51', '999', '41', 'updatestatus', '根据状态更新', '/apply/updatestatus');
+INSERT INTO `t_permission_info` VALUES ('52', '999', '0', 'task', '任务', '/task');
+INSERT INTO `t_permission_info` VALUES ('53', '999', '52', 'tsaklist', '任务展示', '/task/list');
+INSERT INTO `t_permission_info` VALUES ('54', '999', '52', 'taskadd', '新增任务', '/task/add');
+INSERT INTO `t_permission_info` VALUES ('55', '999', '52', 'findnormal', '查找一条正常任务', '/task/findnormal');
+INSERT INTO `t_permission_info` VALUES ('56', '999', '52', 'findtask', '查找一条分配任务', '/task/findtask');
+INSERT INTO `t_permission_info` VALUES ('57', '999', '52', 'addnormal', '新增正常任务', '/task/addnormal');
+INSERT INTO `t_permission_info` VALUES ('58', '999', '52', 'updatenormal', '更新正常任务', '/task/updatenormal');
+INSERT INTO `t_permission_info` VALUES ('59', '999', '52', 'updategive', '更新分配任务', '/task/updategive');
+INSERT INTO `t_permission_info` VALUES ('60', '999', '52', 'listnormal', '该用户的正常任务', '/task/listnormal');
+INSERT INTO `t_permission_info` VALUES ('61', '999', '52', 'listnormal_admin', 'admin所选的该用户的正常任务', '/task/listnormal_admin');
+INSERT INTO `t_permission_info` VALUES ('62', '999', '52', 'listgive_admin', 'dmin所选的该用户已被分配的所有任务', '/task/listgive_admin');
+INSERT INTO `t_permission_info` VALUES ('63', '999', '52', 'listgive', '该用户已被分配的所有任务', '/task/listgive');
+INSERT INTO `t_permission_info` VALUES ('64', '999', '52', 'listbyuser', '该用户已被分配的所有任务，不分页', '/task/listbyuser');
+INSERT INTO `t_permission_info` VALUES ('66', '999', '52', 'giveall', '查询全部分配任务', '/task/giveall');
+INSERT INTO `t_permission_info` VALUES ('67', '999', '52', 'normalall', '展示全部正常任务', '/task/normalall');
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for t_user_role
+-- ----------------------------
+DROP TABLE IF EXISTS `t_user_role`;
+CREATE TABLE `t_user_role` (
+  `fd_id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_id` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`fd_id`),
+  KEY `FK_4uvv76e86ms8ru0kk9s01d3s2` (`role_id`),
+  KEY `FK_kefwen29p9h9ilvry31mgyc94` (`user_id`),
+  KEY `FK_7i1dwl99y9k60t3510m4haol1` (`fd_id`),
+  CONSTRAINT `FK_4uvv76e86ms8ru0kk9s01d3s2` FOREIGN KEY (`role_id`) REFERENCES `t_role_info` (`fd_id`),
+  CONSTRAINT `FK_kefwen29p9h9ilvry31mgyc94` FOREIGN KEY (`user_id`) REFERENCES `t_user_info` (`fd_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of t_user_role
+-- ----------------------------
+INSERT INTO `t_user_role` VALUES ('13', '1', '1');
+INSERT INTO `t_user_role` VALUES ('14', '7', '16');
+INSERT INTO `t_user_role` VALUES ('15', '7', '17');
+INSERT INTO `t_user_role` VALUES ('16', '7', '18');
+INSERT INTO `t_user_role` VALUES ('17', '6', '19');
+INSERT INTO `t_user_role` VALUES ('18', '7', '19');
+
+
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for t_role_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `t_role_permission`;
+CREATE TABLE `t_role_permission` (
+  `fd_id` int(11) NOT NULL AUTO_INCREMENT,
+  `permission_id` int(11) DEFAULT NULL,
+  `role_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`fd_id`),
+  KEY `FK_nkhhl7rlqqsu5goufwn1udr0e` (`permission_id`),
+  KEY `FK_n0gk0jwxlfbi5vbmf43r0kcwl` (`role_id`),
+  CONSTRAINT `FK_n0gk0jwxlfbi5vbmf43r0kcwl` FOREIGN KEY (`role_id`) REFERENCES `t_role_info` (`fd_id`),
+  CONSTRAINT `FK_nkhhl7rlqqsu5goufwn1udr0e` FOREIGN KEY (`permission_id`) REFERENCES `t_permission_info` (`fd_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of t_role_permission
+-- ----------------------------
+INSERT INTO `t_role_permission` VALUES ('38', '9', '1');
+INSERT INTO `t_role_permission` VALUES ('39', '10', '1');
+INSERT INTO `t_role_permission` VALUES ('40', '11', '1');
+INSERT INTO `t_role_permission` VALUES ('41', '12', '1');
+INSERT INTO `t_role_permission` VALUES ('43', '14', '1');
+INSERT INTO `t_role_permission` VALUES ('44', '15', '1');
+INSERT INTO `t_role_permission` VALUES ('45', '16', '1');
+INSERT INTO `t_role_permission` VALUES ('46', '17', '1');
+INSERT INTO `t_role_permission` VALUES ('47', '18', '1');
+INSERT INTO `t_role_permission` VALUES ('48', '19', '1');
+INSERT INTO `t_role_permission` VALUES ('49', '20', '1');
+INSERT INTO `t_role_permission` VALUES ('50', '22', '1');
+INSERT INTO `t_role_permission` VALUES ('51', '23', '1');
+INSERT INTO `t_role_permission` VALUES ('52', '26', '1');
+INSERT INTO `t_role_permission` VALUES ('53', '27', '1');
+INSERT INTO `t_role_permission` VALUES ('54', '28', '1');
+INSERT INTO `t_role_permission` VALUES ('55', '29', '1');
+INSERT INTO `t_role_permission` VALUES ('56', '30', '1');
+INSERT INTO `t_role_permission` VALUES ('57', '31', '1');
+INSERT INTO `t_role_permission` VALUES ('58', '32', '1');
+INSERT INTO `t_role_permission` VALUES ('59', '33', '1');
+INSERT INTO `t_role_permission` VALUES ('60', '34', '1');
+INSERT INTO `t_role_permission` VALUES ('61', '35', '1');
+INSERT INTO `t_role_permission` VALUES ('62', '36', '1');
+INSERT INTO `t_role_permission` VALUES ('63', '37', '1');
+INSERT INTO `t_role_permission` VALUES ('64', '38', '1');
+INSERT INTO `t_role_permission` VALUES ('65', '39', '1');
+INSERT INTO `t_role_permission` VALUES ('66', '40', '1');
+INSERT INTO `t_role_permission` VALUES ('67', '41', '1');
+INSERT INTO `t_role_permission` VALUES ('68', '43', '1');
+INSERT INTO `t_role_permission` VALUES ('69', '45', '1');
+INSERT INTO `t_role_permission` VALUES ('70', '47', '1');
+INSERT INTO `t_role_permission` VALUES ('71', '48', '1');
+INSERT INTO `t_role_permission` VALUES ('72', '49', '1');
+INSERT INTO `t_role_permission` VALUES ('73', '51', '1');
+INSERT INTO `t_role_permission` VALUES ('74', '41', '6');
+INSERT INTO `t_role_permission` VALUES ('75', '42', '6');
+INSERT INTO `t_role_permission` VALUES ('76', '44', '6');
+INSERT INTO `t_role_permission` VALUES ('77', '45', '6');
+INSERT INTO `t_role_permission` VALUES ('78', '46', '6');
+INSERT INTO `t_role_permission` VALUES ('79', '50', '6');
+INSERT INTO `t_role_permission` VALUES ('80', '51', '6');
+INSERT INTO `t_role_permission` VALUES ('81', '52', '6');
+INSERT INTO `t_role_permission` VALUES ('82', '54', '6');
+INSERT INTO `t_role_permission` VALUES ('83', '55', '6');
+INSERT INTO `t_role_permission` VALUES ('84', '56', '6');
+INSERT INTO `t_role_permission` VALUES ('85', '57', '6');
+INSERT INTO `t_role_permission` VALUES ('86', '58', '6');
+INSERT INTO `t_role_permission` VALUES ('87', '60', '6');
+INSERT INTO `t_role_permission` VALUES ('88', '63', '6');
+INSERT INTO `t_role_permission` VALUES ('89', '64', '6');
+INSERT INTO `t_role_permission` VALUES ('91', '41', '7');
+INSERT INTO `t_role_permission` VALUES ('92', '42', '7');
+INSERT INTO `t_role_permission` VALUES ('93', '44', '7');
+INSERT INTO `t_role_permission` VALUES ('94', '45', '7');
+INSERT INTO `t_role_permission` VALUES ('95', '46', '7');
+INSERT INTO `t_role_permission` VALUES ('96', '50', '7');
+INSERT INTO `t_role_permission` VALUES ('97', '51', '7');
+INSERT INTO `t_role_permission` VALUES ('98', '52', '7');
+INSERT INTO `t_role_permission` VALUES ('99', '54', '7');
+INSERT INTO `t_role_permission` VALUES ('100', '55', '7');
+INSERT INTO `t_role_permission` VALUES ('101', '56', '7');
+INSERT INTO `t_role_permission` VALUES ('102', '57', '7');
+INSERT INTO `t_role_permission` VALUES ('103', '58', '7');
+INSERT INTO `t_role_permission` VALUES ('104', '59', '7');
+INSERT INTO `t_role_permission` VALUES ('105', '60', '7');
+INSERT INTO `t_role_permission` VALUES ('106', '63', '7');
+INSERT INTO `t_role_permission` VALUES ('107', '64', '7');
+INSERT INTO `t_role_permission` VALUES ('108', '11', '6');

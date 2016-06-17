@@ -1,0 +1,22 @@
+package com.puban.overtime.task.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.puban.framework.core.service.impl.BaseServiceImpl;
+import com.puban.overtime.task.model.Task;
+import com.puban.overtime.task.service.ITaskService;
+
+@Service
+public class TaskServiceImpl extends BaseServiceImpl<Task> implements ITaskService
+{
+
+	@Override
+	public List<Task> list()
+	{
+		System.err.println("service list...");
+		return null;
+	}
+
+}

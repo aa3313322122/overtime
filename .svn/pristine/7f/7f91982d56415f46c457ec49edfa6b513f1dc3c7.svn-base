@@ -1,0 +1,19 @@
+package com.puban.overtime.apply.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.puban.framework.core.controller.BaseController;
+import com.puban.overtime.apply.service.IApplyService;
+
+@Controller
+@RequestMapping(value="/apply")
+public class ApplyController extends BaseController
+{
+	@Autowired
+	IApplyService applyService;
+	
+	
+	
+}

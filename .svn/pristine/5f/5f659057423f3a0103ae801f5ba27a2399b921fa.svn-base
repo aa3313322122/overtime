@@ -1,0 +1,13 @@
+package com.puban.overtime.task.service;
+
+import java.util.List;
+
+import com.puban.framework.core.service.IBaseService;
+import com.puban.overtime.task.model.Task;
+
+public interface ITaskService extends IBaseService<Task>
+{
+
+	public List<Task> list();
+
+}

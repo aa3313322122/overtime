@@ -1,0 +1,48 @@
+package com.puban.overtime.authority.model;
+
+import com.puban.framework.core.model.BaseModel;
+
+import javax.persistence.*;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: RolePermission
+ * @Description:
+ * @date: 2016/5/18
+ */
+@Entity
+@Table(name = "t_role_permission")
+public class RolePermission extends BaseModel {
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer fdId;
+
+    //权限ID
+    @Column(name = "fd_permission_id")
+    private Integer fdPermissionId;
+
+    //角色ID
+    @Column(name = "fd_role_id")
+    private Integer fdRoleId;
+
+    public RolePermission(){}
+
+    public RolePermission(Integer fdPermissionId, Integer fdRoleId) {
+        this.fdPermissionId = fdPermissionId;
+        this.fdRoleId = fdRoleId;
+    }
+
+    public Integer getFdId() {return fdId;}
+
+    public void setFdId(Integer fdId) {this.fdId = fdId;}
+
+    public Integer getFdPermissionId() {return fdPermissionId;}
+
+    public void setFdPermissionId(Integer fdPermissionId) {this.fdPermissionId = fdPermissionId;}
+
+    public Integer getFdRoleId() {return fdRoleId;}
+
+    public void setFdRoleId(Integer fdRoleId) {this.fdRoleId = fdRoleId;}
+}

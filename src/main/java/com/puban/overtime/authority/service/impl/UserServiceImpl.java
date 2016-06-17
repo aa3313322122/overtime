@@ -1,0 +1,161 @@
+package com.puban.overtime.authority.service.impl;
+
+import com.puban.framework.core.page.PageView;
+import com.puban.framework.core.page.QueryResult;
+import com.puban.framework.core.service.impl.BaseServiceImpl;
+import com.puban.overtime.authority.dao.IPermissionDao;
+import com.puban.overtime.authority.dao.IRoleDao;
+import com.puban.overtime.authority.dao.IUserDao;
+import com.puban.overtime.authority.dao.IUserRoleDao;
+import com.puban.overtime.authority.model.Role;
+import com.puban.overtime.authority.model.User;
+import com.puban.overtime.authority.model.UserRole;
+import com.puban.overtime.authority.service.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: UserServiceImpl
+ * @Description:
+ * @date: 2016/5/18
+ */
+@Service
+public class UserServiceImpl extends BaseServiceImpl<User> implements IUserService {
+    @Autowired
+    private IUserDao userDao;
+    @Autowired
+    private IPermissionDao permissionDao;
+    @Autowired
+    private IRoleDao roleDao;
+    @Autowired
+    private IUserRoleDao userRoleDao;
+
+
+    @Override
+    public User getUserInfoByName(String name) {
+        return userDao.getUserInfoByName(name);
+    }
+
+    /**
+     * 保存用户
+     * @param user
+     * @param roleId
+     */
+    @Override
+    public void save(User user, Integer[] roleId) {
+        userDao.save(user);
+        for (int i = 0; i < roleId.length; i++) {
+            Role role = roleDao.find(Role.class,roleId[i]);
+            UserRole ur = new UserRole();
+            ur.setUser(user);
+            ur.setRole(role);
+            userRoleDao.save(ur);
+        }
+    }
+
+    /**
+     * 更新保存
+     *
+     * @param user
+     * @param roleId
+     */
+    @Override
+    public void update(User user, Integer[] roleId) {
+        User u = userDao.find(User.class, user.getFdId());
+        u.setFdPassword(user.getFdPassword());
+        u.setFdUserName(user.getFdUserName());
+        u.setFdEmail(user.getFdEmail());
+        u.setFdMobilePhone(user.getFdMobilePhone());
+        userDao.update(u);
+        Set<Role> roles = new HashSet<Role>();
+        //先删除用户ID中间表用户角色信息，再新增
+        userRoleDao.deleteByUserId(user.getFdId());
+        if (null != roleId) {
+            for (int i = 0; i < roleId.length; i++) {
+                Role role = roleDao.find(Role.class, roleId[i]);
+                UserRole ur = new UserRole();
+                ur.setUser(user);
+                ur.setRole(role);
+                userRoleDao.save(ur);
+            }
+        }
+
+    }
+
+    /**
+     * 删除用户信息
+     * @param userId
+     */
+    @Override
+    public void delete(Integer userId) {
+        User user =this.findByPrimaryKey(userId);
+        userDao.remove(User.class, user.getFdId());
+    }
+
+    /**
+     * 用户列表条件查询
+     * @param username
+     * @param currentPage
+     * @return
+     */
+    @Override
+    public PageView<User> queryBySerach(String username, Integer currentPage) {
+        PageView<User> pageView = new PageView<User>(5, currentPage);
+        /** 查询条件 **/
+        List<Object> paramterList = new ArrayList<Object>();
+
+        if (currentPage == null) {
+            currentPage = 1;
+        }
+        int firstindex = (pageView.getCurrentpage() - 1) * pageView.getMaxresult();
+
+        LinkedHashMap<String, String> orderby = new LinkedHashMap<String, String>();
+        orderby.put("fdId", "desc");
+
+        StringBuffer whereHql = new StringBuffer();
+        whereHql.append(" 1=1 ");
+        List<Object> queryParams = new ArrayList<Object>();
+
+        if(username !=null && (!username.equals(""))){
+            int index = queryParams.size() + 1;
+            whereHql.append(" and user.fdUserName like :p" + index).append(" ");
+            queryParams.add("%" + username + "%");
+        }
+        QueryResult<User> queryResult = userDao.query(User.class,firstindex, pageView.getMaxresult(), whereHql.toString(), queryParams.toArray(), orderby);
+        pageView.setQueryResult(queryResult);
+        return pageView;
+    }
+
+    @Override
+    public void saveRoles(User userInfo, List<Role> roles) {
+        User user = new User();
+        user.setFdId(userInfo.getFdId());
+        if (null != userInfo.getFdPassword()) {
+            user.setFdPassword(userInfo.getFdPassword());
+        }
+        if (null != userInfo.getFdMobilePhone()) {
+            user.setFdMobilePhone(userInfo.getFdMobilePhone());
+        }
+        if (null != userInfo.getFdUserName()) {
+            user.setFdUserName(userInfo.getFdUserName());
+        }
+        if (null != userInfo.getUserRoles()) {
+            user.setUserRoles(userInfo.getUserRoles());
+        }
+        if (null != userInfo.getFdEmail()) {
+            user.setFdEmail(userInfo.getFdEmail());
+        }
+        if (null != roles) {
+            user.setRoles(roles);
+        }
+        if(null != userInfo.getRolesName()){
+            user.setRolesName(userInfo.getRolesName());
+        }
+        this.update(user);
+    }
+
+
+}

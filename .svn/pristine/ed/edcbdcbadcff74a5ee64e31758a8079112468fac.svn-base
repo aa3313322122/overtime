@@ -1,0 +1,99 @@
+package com.puban.overtime.apply.model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Table(name = "t_overtime")
+@Entity
+public class OverTime
+{
+	@Id
+	@Column(name = "fd_id")
+	private Integer fdId;
+	
+	/*@JoinColumn(name = "fd_apply_id")
+	private User user;*/
+	
+	/**加班开始时间**/
+	@Column(name = "fd_start_time")
+	private String fdStartTime;
+	
+	/**加班结束时间**/
+	@Column(name = "fd_end_time")
+	private String fdEndTime;
+	
+	/**加班总时长**/
+	@Column(name = "fd_over_time")
+	private String fdOverTime;
+	
+	/**加班事由**/
+	@Column(name = "fd_reason")
+	private String fdReason;
+	
+	/**审批状态**/
+	@Column(name = "fd_status")
+	private String fdStatus;
+
+	public Integer getFdId()
+	{
+		return fdId;
+	}
+
+	public void setFdId(Integer fdId)
+	{
+		this.fdId = fdId;
+	}
+
+	public String getFdStartTime()
+	{
+		return fdStartTime;
+	}
+
+	public void setFdStartTime(String fdStartTime)
+	{
+		this.fdStartTime = fdStartTime;
+	}
+
+	public String getFdEndTime()
+	{
+		return fdEndTime;
+	}
+
+	public void setFdEndTime(String fdEndTime)
+	{
+		this.fdEndTime = fdEndTime;
+	}
+
+	public String getFdOverTime()
+	{
+		return fdOverTime;
+	}
+
+	public void setFdOverTime(String fdOverTime)
+	{
+		this.fdOverTime = fdOverTime;
+	}
+
+	public String getFdReason()
+	{
+		return fdReason;
+	}
+
+	public void setFdReason(String fdReason)
+	{
+		this.fdReason = fdReason;
+	}
+
+	public String getFdStatus()
+	{
+		return fdStatus;
+	}
+
+	public void setFdStatus(String fdStatus)
+	{
+		this.fdStatus = fdStatus;
+	}
+
+}

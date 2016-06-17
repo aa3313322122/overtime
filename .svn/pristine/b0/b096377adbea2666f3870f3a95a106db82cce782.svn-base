@@ -1,0 +1,9 @@
+package com.puban.overtime.apply.service;
+
+import com.puban.framework.core.service.IBaseService;
+import com.puban.overtime.apply.model.Apply;
+
+public interface IApplyService extends IBaseService<Apply>
+{
+
+}

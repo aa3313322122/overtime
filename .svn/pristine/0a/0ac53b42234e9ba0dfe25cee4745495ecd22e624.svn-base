@@ -1,0 +1,40 @@
+package com.puban.overtime.authority.service.impl;
+
+import com.puban.framework.core.service.impl.BaseServiceImpl;
+import com.puban.overtime.authority.dao.IUserRoleDao;
+import com.puban.overtime.authority.model.UserRole;
+import com.puban.overtime.authority.service.IUserRoleService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: UserRoleImpl
+ * @Description:
+ * @date: 2016/5/24
+ */
+
+public class UserRoleServiceImpl extends BaseServiceImpl<UserRole> implements IUserRoleService {
+
+    @Autowired
+    private IUserRoleDao userRoleDao;
+
+    @Override
+    public void save(Integer userId, Integer roleId) {
+        UserRole userRole = new UserRole();
+        userRole.setFdUserId(userId);
+        userRole.setFdRoleId(roleId);
+        this.save(userRole);
+    }
+
+    /**
+     * 根据用户ID获取角色id
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<UserRole> findRoleIdSetByUserId(int userId) {
+        return userRoleDao.findRoleIdSetByUserId(userId);
+    }
+}

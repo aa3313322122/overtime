@@ -1,0 +1,29 @@
+package com.puban.overtime.authority.service;
+
+import com.puban.framework.core.service.IBaseService;
+import com.puban.overtime.authority.model.User;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: IUserService
+ * @Description:
+ * @date: 2016/5/18
+ */
+public interface IUserService extends IBaseService<User> {
+    /**
+     * 根据账号id获取授权
+     *
+     * @param userId
+     * @return
+     */
+    SimpleAuthorizationInfo getUserRolePermission(int userId);
+
+    /**
+     * 根据账号查询信息
+     *
+     * @param name
+     * @return
+     */
+    public User getUserInfoByName(String name);
+}

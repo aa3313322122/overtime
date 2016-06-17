@@ -1,0 +1,48 @@
+package com.puban.overtime.authority.model;
+
+import com.puban.framework.core.model.BaseModel;
+
+import javax.persistence.*;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: UserRole
+ * @Description:用户角色关联关系表
+ * @date: 2016/5/18
+ */
+@Entity
+@Table(name = "t_user_role")
+public class UserRole extends BaseModel {
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer fd_id;
+
+    //用户ID,即账号
+    @Column(name = "fd_user_id")
+    private Integer fdUserId;
+
+    //角色ID
+    @Column(name = "fd_role_id")
+    private Integer fdRoleId;
+
+    public UserRole (){}
+
+    public UserRole(Integer fdUserId, Integer fdRoleId) {
+        this.fdUserId = fdUserId;
+        this.fdRoleId = fdRoleId;
+    }
+
+    public Integer getFd_id() {return fd_id;}
+
+    public void setFd_id(Integer fd_id) {this.fd_id = fd_id;}
+
+    public Integer getFdUserId() {return fdUserId;}
+
+    public void setFdUserId(Integer fdUserId) {this.fdUserId = fdUserId;}
+
+    public Integer getFdRoleId() {return fdRoleId;}
+
+    public void setFdRoleId(Integer fdRoleId) {this.fdRoleId = fdRoleId;}
+}

@@ -1,0 +1,123 @@
+package com.puban.apply;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.puban.framework.core.page.QueryResult;
+import com.puban.overtime.apply.model.OverTime;
+import com.puban.overtime.apply.service.IApplyService;
+import com.puban.overtime.authority.model.User;
+import com.puban.overtime.authority.service.IUserService;
+import com.puban.overtime.task.model.Task;
+import com.puban.overtime.task.service.ITaskService;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath*:config/*/applicationContext-*.xml" })
+public class ApplyTest
+{
+	@Autowired
+	IApplyService applyService;
+	
+	@Autowired
+	IUserService userService;
+	
+	@Autowired
+	ITaskService taskService;
+	
+	/**加班申请**/
+	@Test
+	public void addOverTime()
+	{
+		OverTime overTime = new OverTime();
+		overTime.setFdStatus("1");
+		overTime.setFdReason("ggg");
+		overTime = selectUser(1, overTime);
+		overTime = selectTask(1, overTime);
+		if(null != overTime)
+		{
+			applyService.save(overTime);
+		}
+		
+	}
+	
+	private OverTime selectUser(Integer userId, OverTime overTime)
+	{
+		User user = userService.findByPrimaryKey(userId);
+		if(null != user)
+		{
+			overTime.setUser(user);
+			return overTime;
+		}
+		return null;
+	}
+	
+	private OverTime selectTask(Integer taskId, OverTime overTime)
+	{
+		Task task = taskService.findByPrimaryKey(taskId);
+		if(null != task)
+		{
+			overTime.setTask(task);
+			return overTime;
+		}
+		return null;
+	}
+	
+	/**查找加班申请**/
+	@Test
+	public void findOverTime()
+	{
+		applyService.findByPrimaryKey(7);
+	}
+	
+	/**回填审批意见**/
+	@Test
+	public void updateOverTime()
+	{
+		OverTime overTime = applyService.findByPrimaryKey(7);
+		if(null != overTime)
+		{
+			overTime.setFdAdvice("no");
+			applyService.update(overTime);
+		}
+	}
+	
+	/**根据申请人查询加班申请**/
+	@Test
+	public void queryOverTimeByUser()
+	{
+		int firstindex = 1;
+		int maxresult = 5;
+		String wheresql = "user_id = '1'";
+		QueryResult<OverTime> queryResult = applyService.
+				query(firstindex, maxresult, wheresql, null);
+		queryResult.getResultlist();
+		queryResult.getTotalrecord();
+	}
+	
+	/**根据审批状态查询加班申请**/
+	@Test
+	public void queryOverTimeByStatus()
+	{
+		int firstindex = 1;
+		int maxresult = 5;
+		String hql = "fd_advice = 'ok'";
+		QueryResult<OverTime> queryResult = applyService.
+				query(firstindex, maxresult, hql, null);
+		queryResult.getResultlist();
+		queryResult.getTotalrecord();
+	}
+	
+	/**分页查询**/
+	@Test
+	public void queryOverTime()
+	{
+		int firstindex = 1;
+		int maxresult = 5;
+		QueryResult<OverTime> queryResult = applyService.query(firstindex, maxresult);
+		queryResult.getResultlist();
+		queryResult.getTotalrecord();
+	}
+}

@@ -1,0 +1,13 @@
+package com.puban.overtime.task.dao.impl;
+
+import org.springframework.stereotype.Repository;
+
+import com.puban.framework.core.dao.impl.BaseDaoImpl;
+import com.puban.overtime.task.dao.ITaskDao;
+import com.puban.overtime.task.model.Task;
+
+@Repository
+public class TaskDaoImpl extends BaseDaoImpl<Task> implements ITaskDao
+{
+
+}

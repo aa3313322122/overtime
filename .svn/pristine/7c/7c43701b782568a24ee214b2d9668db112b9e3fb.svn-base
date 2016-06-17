@@ -1,0 +1,57 @@
+package com.puban.overtime.authority.service;
+
+import com.puban.framework.core.page.PageView;
+import com.puban.framework.core.service.IBaseService;
+import com.puban.overtime.authority.model.User;
+import com.puban.overtime.authority.shiro.ResultVO;
+import com.puban.overtime.authority.shiro.vo.UserEditVO;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: IUserService
+ * @Description:
+ * @date: 2016/5/18
+ */
+public interface IUserService extends IBaseService<User> {
+    /**
+     * 根据账号id获取授权
+     *
+     * @param userId
+     * @return
+     */
+    SimpleAuthorizationInfo getUserRolePermission(int userId);
+
+    /**
+     * 根据账号查询信息
+     *
+     * @param name
+     * @return
+     */
+    public User getUserInfoByName(String name);
+
+
+    /**
+     * 分页带条件查询数据
+     */
+    public PageView<User> queryBySerach(String username,Integer page);
+
+    /**
+     * 新增用户
+     */
+    public ResultVO saveUser(String fdUserName, String fdPassword);
+
+    /**
+     * 删除用户
+     * @param userIds
+     * @return
+     */
+    public ResultVO deleteUser(int[] userIds);
+
+    /**
+     * 修改用户信息
+     * @param editVO
+     * @return
+     */
+    public ResultVO editUser(UserEditVO editVO);
+}

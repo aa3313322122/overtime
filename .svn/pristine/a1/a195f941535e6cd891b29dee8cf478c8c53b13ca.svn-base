@@ -1,0 +1,244 @@
+package com.puban.overtime.authority.service.impl;
+
+import com.puban.framework.core.service.impl.BaseServiceImpl;
+import com.puban.overtime.authority.dao.IPermissionDao;
+import com.puban.overtime.authority.dao.IRolePermissionDao;
+import com.puban.overtime.authority.model.Permission;
+import com.puban.overtime.authority.service.IPermissionService;
+import com.puban.overtime.authority.shiro.ResultVO;
+import com.puban.overtime.authority.shiro.vo.PermissionCreateVO;
+import com.puban.overtime.authority.shiro.vo.PermissionEditVO;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: PermissionServiceImpl
+ * @Description: 权限
+ * @date: 2016/5/24
+ */
+
+public class PermissionServiceImpl extends BaseServiceImpl<Permission> implements IPermissionService {
+    @Resource(name = "permissionDao")
+    private IPermissionDao permissionDao;
+
+    @Resource(name = "rolePermissionDao")
+    private IRolePermissionDao rolePermissionDao;
+    /**
+     * 新增权限
+     * @param permissionCreateVO
+     * @return
+     */
+    @Override
+    public ResultVO addPermission(PermissionCreateVO permissionCreateVO) {
+        ResultVO resultVO = new ResultVO(true);
+        //获取所有权限
+        List<Permission> permissionList = this.query().getResultlist();
+        //查看父级权限是否存在
+        Integer parentId = permissionCreateVO.getParentId();
+        if (parentId != null) {
+            //根据权限ID获取权限
+            Permission permission = permissionDao.getPermissionById(permissionList, parentId.intValue());
+            if (permission == null) {
+                resultVO.setOk(false);
+                resultVO.setMsg("父级权限不存在");
+                return resultVO;
+            }
+        }
+        //判断权限键值是否存在
+        if (isKeyExist(permissionList, permissionCreateVO.getKey())) {
+            resultVO.setOk(false);
+            resultVO.setMsg("权限键值已存在");
+            return resultVO;
+        }
+        Permission permission = new Permission();
+        permission.setFdPermissionKey(permissionCreateVO.getKey());
+        permission.setFdPermissionName(permissionCreateVO.getName());
+        permission.setFdOrders(permissionCreateVO.getOrder());
+        permission.setFdPParentId(permissionCreateVO.getParentId());
+        permissionDao.save(permission);
+        resultVO.setMsg("权限创建成功");
+        return resultVO;
+    }
+
+    /**
+     * 编辑权限
+     * @param permissionEditVO
+     * @return
+     */
+    @Override
+    public ResultVO editPermission(PermissionEditVO permissionEditVO) {
+        ResultVO resultVO = new ResultVO(true);
+        //获取所有权限
+        List<Permission> permissionList = this.query().getResultlist();
+        //根据权限ID获取权限
+        Permission permission = permissionDao.getPermissionById(permissionList, permissionEditVO.getId());
+        if (permission == null) {
+            resultVO.setOk(false);
+            resultVO.setMsg("权限不存在");
+            return resultVO;
+        }
+        //根据上级权限ID获取权限
+        Permission permissionParent = permissionDao.getPermissionById(permissionList, permissionEditVO.getParentId());
+        if (permissionParent == null) {
+            resultVO.setOk(false);
+            resultVO.setMsg("上级权限不存在");
+            return resultVO;
+        }
+
+        if (isKeyExist(permissionList, permissionEditVO.getKey())) {
+            if (!permission.getFdPermissionKey().equals(permissionEditVO.getKey())) {
+                resultVO.setOk(false);
+                resultVO.setMsg("权限键值已存在");
+                return resultVO;
+            }
+        }
+
+        //获取子级权限id集合
+        List<Integer> childrenPermissionIds = getChildrenPermissionIds(permissionEditVO.getId(), permissionList);
+        childrenPermissionIds.add(permissionEditVO.getId());
+        if (childrenPermissionIds.contains(permissionEditVO.getParentId())) {
+            resultVO.setOk(false);
+            resultVO.setMsg("所在权限的上级不能为自己所在权限或者下级权限");
+            return resultVO;
+        }
+
+        Permission update = new Permission();
+        update.setFdPParentId(permissionEditVO.getParentId());
+        update.setFdId(permissionEditVO.getId());
+        update.setFdPermissionName(permissionEditVO.getName());
+        update.setFdPermissionKey(permissionEditVO.getKey());
+        update.setFdOrders(permissionEditVO.getOrder());
+        permissionDao.update(update);
+        if (update.getFdPermissionKey()!=null) {
+            resultVO.setMsg("更新权限成功");
+            return resultVO;
+        } else {
+            resultVO.setOk(false);
+            resultVO.setMsg("更新权限失败");
+            return resultVO;
+        }
+    }
+
+    /**
+     * 获取子级权限id集合
+     *
+     * @param parentId
+     * @param permissions
+     * @return
+     */
+    public static List<Integer> getChildrenPermissionIds(Integer parentId, List<Permission> permissions) {
+        List<Integer> list = new ArrayList<Integer>();
+        for (Permission permission : permissions) {
+            if ((parentId == null && permission.getFdPParentId() == null) || (parentId != null && permission.getFdPParentId() != null && parentId.intValue() == permission.getFdPParentId().intValue())) {
+                list.add(permission.getFdId());
+                list.addAll(getChildrenPermissionIds(permission.getFdId(), permissions));
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 删除权限
+     * @param permIds
+     * @return
+     */
+    @Override
+    public ResultVO delPermission(int[] permIds) {
+        ResultVO resultVO = new ResultVO(true);
+        //获取所有权限
+        List<Permission> permissionList = this.query().getResultlist();
+        Subject subject = SecurityUtils.getSubject();
+        for (int perId : permIds) {
+            //根据权限ID获取权限
+            Permission permission = permissionDao.getPermissionById(permissionList, perId);
+            if (permission == null) {
+                resultVO.setOk(false);
+                resultVO.setMsg("权限不存在");
+                return resultVO;
+            }
+
+            //查看是否有权限
+            if (!subject.isPermitted(permission.getFdPermissionKey())) {
+                resultVO.setOk(false);
+                resultVO.setMsg("您没有操作权限");
+                return resultVO;
+            }
+
+            //判断是否是根级权限
+            //获取我拥有的权限
+            List<Permission> myPermissionList = new ArrayList<Permission>();
+            for (Permission p : permissionList) {
+                String key = p.getFdPermissionKey();
+                boolean permitted = subject.isPermitted(key);
+                if (permitted) {
+                    myPermissionList.add(p);
+                }
+            }
+            // 获取根权限
+            List<Permission> rootPermissions = getRootPermissions(myPermissionList);
+
+            for (Permission p : rootPermissions) {
+                if (p.getFdId().intValue() == perId) {
+                    resultVO.setOk(false);
+                    resultVO.setMsg("根级权限不能删除");
+                    return resultVO;
+                }
+            }
+        }
+        for (int perId : permIds) {
+            //获取子级权限id集合
+            List<Integer> childrenPermissionIds = getChildrenPermissionIds(perId, permissionList);
+
+            //删除父级权限
+            this.remove(perId);
+
+            for (Integer id : childrenPermissionIds) {
+                Permission permission = this.findByPrimaryKey(id);
+                this.remove(id);
+                if(permission == null){
+                    rolePermissionDao.deleteByPId(id);
+                }
+            }
+            //删除角色权限关联表
+            rolePermissionDao.deleteByPId(perId);
+        }
+        resultVO.setMsg("删除权限成功");
+        return resultVO;
+    }
+    /**
+     * 获取根权限
+     *
+     * @param permissionList
+     * @return
+     */
+    private List<Permission> getRootPermissions(List<Permission> permissionList) {
+        List<Permission> rootPermissions = new ArrayList<Permission>();
+        for (Permission permission : permissionList) {
+            //如果父级id是null
+            if (permission.getFdPParentId() == null) {
+                rootPermissions.add(permission);
+                continue;
+            }
+            //根据权限ID获取权限
+            Permission parentPermission = permissionDao.getPermissionById(permissionList, permission.getFdPParentId().intValue());
+            if (parentPermission == null) {
+                rootPermissions.add(permission);
+            }
+        }
+        return rootPermissions;
+    }
+
+    private static boolean isKeyExist(List<Permission> list, String key) {
+        for (Permission permission : list) {
+            if (permission.getFdPermissionKey().equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}

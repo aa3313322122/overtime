@@ -1,0 +1,182 @@
+﻿<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!doctype html>
+<!--[if lt IE 7 ]><html class="ie6" lang="zh-cn"><![endif]-->
+<!--[if IE 7 ]><html class="ie7" lang="zh-cn"><![endif]-->
+<!--[if IE 8 ]><html class="ie8" lang="zh-cn"><![endif]-->
+<!--[if IE 9 ]><html class="ie9" lang="zh-cn"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html class="" lang="zh-cn"><!--<![endif]--> 
+<head>
+<meta name="description" content="Dashboard" />
+<meta content="text/html;charset=utf-8;text/x-component" http-equiv="Content-Type">
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+<meta name="referrer" content="always">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>普伴资本加班系统-权限管理</title>
+
+    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
+
+    <link href="<%=request.getContextPath()%>/view/html/style/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="<%=request.getContextPath()%>/view/html/style/beyond.min.css" rel="stylesheet" type="text/css" />
+    <link href="<%=request.getContextPath()%>/view/html/style/animate.min.css" rel="stylesheet" type="text/css" />
+    <link href="<%=request.getContextPath()%>/view/html/style/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/view/html/style/common.css">
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/view/html/style/index.css">
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/view/html/style/system/index.css">
+
+    <!--让IE认得HTML5-->
+    <!-–[if lt IE 9]-->
+    <script src="<%=request.getContextPath()%>/view/html/script/html5shiv.js "></script>
+    <!--[endif]–- >
+<!--[if IE]>
+    <script>
+        (function(){if(!/*@cc_on!@*/0)return;var e = "header,footer,nav,article,section".split(','),i=e.length;while(i--){document.createElement(e[i])}})()
+    </script>
+    <![endif]-->
+
+    <!--让IE8-认得@media，上传服务器方可查看效果-->
+    <script src="<%=request.getContextPath()%>/view/html/script/Respond-master/dest/respond.src.js"></script>
+
+    <script src="<%=request.getContextPath()%>/view/html/script/skins.min.js"></script>
+</head>
+<!--Head Ends-->
+<!--Body-->
+<body class="y_index_bg">
+<div class="index_header clearfix ">
+    <a href="###" class="left logo"></a>
+    <div class="header_right right">
+        <span>您好！<%=request.getSession(false).getAttribute("loginName") %></span>
+        <a href="<%=request.getContextPath()%>/userlogin/logout" class="exit">退出</a>
+    </div>
+</div>
+<div class="index_content clearfix">
+    
+    <div class="col_pageBar left">
+        <div class="menu_box">            
+            <dl class="menu">
+                <dt class="menu_title"><i class="icons ico_system"></i>系统管理</dt>
+                <dd class="menu_item "><a href="<%=request.getContextPath()%>/user/list">用户管理</a></dd>
+                <dd class="menu_item "><a href="<%=request.getContextPath()%>/role/list">角色管理</a></dd>
+                <dd class="menu_item menu_current"><a href="<%=request.getContextPath()%>/permission/plist">权限管理</a></dd>
+            </dl>
+        </div>
+    </div>
+    <div class="col_pageContent left">
+        <div class="main_title pd_030">
+            <h2>权限管理</h2>
+        </div>
+        <div class="main_content pd_030">
+            <div class="clearfix">
+                <form action="<%=request.getContextPath()%>/permission/list" name="permissionForm" id="permissionForm" method="post">
+                    <div class="clearfix">
+                        <div class="index_search clearfix left">
+                            <input type="search" placeholder="请输入权限key" class="left sch_input_search" name="fdPermissionKey">
+                            <input type="hidden" name="currentPage" id="currentPage" value="${pageView.currentpage}" />
+                            <input type="hidden" name="fdPParentId" id="fdPParentId" value="" />
+                            <input type="hidden" name="pageSize" id="pageSizeId" value="${pageSize}" />
+                        </div>
+                        <input type="submit" class="left sch_input_btn mg_l_10" value="查  询">
+                    </div>
+                </form>
+                <div class="operate_bar clearfix right ">
+                    <a class="btns btn_new" href="<%=request.getContextPath()%>/permission/add?pid=${pid}">新增权限</a>
+                </div>
+            </div>
+
+            <div class="index_list maintainer_list">
+                <table width="100%">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>权限名称</th>
+                            <th>权限key</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="p" varStatus="status" items="${pageView.records}">
+                            <tr>
+                                <td>${status.index+1}</td>
+                                <td>${p.fdPermissionName}</td>
+                                <td>${p.fdPermissionKey}</td>
+                                <td>
+                                    <a class="btns reset_pwd btn_sml" href="<%=request.getContextPath()%>/permission/edit?id=${p.fdId}">编辑</a>
+                                    <a class="btns reset_pwd btn_sml" href="#" onclick="del(${p.fdId})">删除</a>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+
+            </div>
+            <!-- start 翻页 -->
+            <div class="DTTTFooter">
+                <div class="DTTTFooter_left clearfix">
+                    <div class="dataTables_info left">共${pageView.totalrecord}条数据</div>
+                </div>
+                <div class="DTTTFooter_right">
+                    <div class="dataTables_paginate paging_bootstrap">
+                        <ul class="pagination">
+                            <li class="index">
+                                <a href="javascript:goToPage('1');">首页</a>
+                            </li>
+                            <li class="prev">
+                                <a href="javascript:goToPage('<c:if test="${pageView.currentpage-1<1}">1</c:if><c:if test="${pageView.currentpage-1>0}">${pageView.currentpage-1}</c:if>');">上一页</a>
+                            </li>
+                            <c:forEach var="i" begin="1" end="${pageView.totalpage}">
+                                <li
+                                        <c:if test="${pageView.currentpage==i}">class="active"</c:if> >
+                                    <a href="javascript:goToPage('${i}')">${i}</a>
+                                </li>
+                            </c:forEach>
+                            <li class="next">
+                                <a href="javascript:goToPage('<c:if test="${pageView.currentpage+1>=pageView.totalpage}">${pageView.totalpage}</c:if><c:if test="${pageView.currentpage+1<pageView.totalpage}">${pageView.currentpage+1}</c:if>');">下一页</a>
+                            </li>
+                            <li class="next">
+                                <a href="javascript:goToPage('${pageView.totalpage}');">尾页</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- end 翻页 -->
+        </div>
+    </div>
+</div>
+
+<script src="<%=request.getContextPath()%>/view/html/script/jquery-1.8.2.js"></script>
+<script src="<%=request.getContextPath()%>/view/html/script/bootstrap.min.js"></script>
+<script src="<%=request.getContextPath()%>/view/html/script/beyond.min.js"></script>
+<script src="<%=request.getContextPath()%>/view/html/script/placeHolder.js"></script>
+<script type="text/javascript">
+    function goToPage(pageNo) {
+        alert("######");
+        alert(pageNo+"@@@@@@@");
+        $("#currentPage").val(pageNo);
+        document.getElementById("permissionForm").submit();
+    }
+    //删除
+    function del(id) {
+        if (confirm("确定要删除" + name + "权限吗？")) {
+            $.ajax({
+                cache: true,
+                type: "POST",
+                asnyc: false,
+                dataType: "json",
+                url: '<%=request.getContextPath()%>/permission/delete',
+                data: "id="+id,
+                success: function (data) {
+                    if (data.ok == true) {
+                        alert(data.msg);
+                        window.location.href = '<%=request.getContextPath()%>/permission/plist';
+                    } else {
+                        alert(data.msg);
+                    }
+                }
+            });
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,224 @@
+package com.puban.overtime.authority.service.impl;
+
+import com.puban.framework.core.page.PageView;
+import com.puban.framework.core.page.QueryResult;
+import com.puban.framework.core.service.impl.BaseServiceImpl;
+import com.puban.overtime.authority.dao.IPermissionDao;
+import com.puban.overtime.authority.dao.IRoleDao;
+import com.puban.overtime.authority.dao.IRolePermissionDao;
+import com.puban.overtime.authority.model.Permission;
+import com.puban.overtime.authority.model.Role;
+import com.puban.overtime.authority.service.IPermissionService;
+import com.puban.overtime.authority.shiro.tree.SelectTreeUtil;
+import com.puban.overtime.authority.shiro.tree.TreeObject;
+import com.puban.overtime.authority.shiro.tree.TreeUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: PermissionServiceImpl
+ * @Description: 权限
+ * @date: 2016/5/24
+ */
+@Service
+public class PermissionServiceImpl extends BaseServiceImpl<Permission> implements IPermissionService {
+    @Autowired
+    private IPermissionDao permissionDao;
+
+    @Autowired
+    private IRoleDao roleDao;
+
+    @Autowired
+    private IRolePermissionDao rolePermissionDao;
+
+    /**
+     * 分页待条件查询
+     * @param parentId
+     * @param page
+     * @return
+     */
+    @Override
+    public PageView<Permission> queryBySerach(Integer parentId, Integer page,String fdPermissionKey) {
+        PageView<Permission> pageView = new PageView<Permission>(5, page);
+        /** 查询条件 **/
+        List<Object> paramterList = new ArrayList<Object>();
+
+        if (page == null) {
+            page = 1;
+        }
+        int firstindex = (pageView.getCurrentpage() - 1) * pageView.getMaxresult();
+
+        LinkedHashMap<String, String> orderby = new LinkedHashMap<String, String>();
+        orderby.put("fdId", "desc");
+
+        StringBuffer whereHql = new StringBuffer();
+        whereHql.append(" 1=1 ");
+        List<Object> queryParams = new ArrayList<Object>();
+
+        if (parentId != null && parentId!=0) {
+            int index = queryParams.size() + 1;
+            whereHql.append(" and fdPParentId = :p" + index).append(" ");
+            queryParams.add(parentId);
+        }
+        if(null != fdPermissionKey){
+            int index = queryParams.size() + 1;
+            whereHql.append(" and fdPermissionKey like :p" + index).append(" ");
+            queryParams.add("%" + fdPermissionKey + "%");
+        }
+        QueryResult<Permission> queryResult = permissionDao.query(Permission.class, firstindex, pageView.getMaxresult(), whereHql.toString(), queryParams.toArray(), orderby);
+        pageView.setQueryResult(queryResult);
+        return pageView;
+    }
+
+    /**
+     * 查询返回下拉选择框
+     *
+     * @return
+     */
+    @Override
+    public List<TreeObject> findToSelectTree() {
+        //获取所有资源
+        List<Permission> res = permissionDao.query(Permission.class).getResultlist();
+        List<TreeObject> list = new ArrayList<TreeObject>();
+        for (Permission r : res) {
+            TreeObject ts = new TreeObject();
+            ts.setId(r.getFdId().intValue());
+            ts.setName(r.getFdPermissionName());
+            ts.setParentId(r.getFdPParentId());
+            list.add(ts);
+        }
+        SelectTreeUtil selectTreeUtil = new SelectTreeUtil();
+        List<TreeObject> tree = selectTreeUtil.listToTree(list, 0);
+        return tree;
+    }
+
+    /**
+     * 根据KEY查询
+     * @param key
+     * @return
+     */
+    @Override
+    public Permission getResourcesByKey(String key) {return permissionDao.getResourcesByKey(key);}
+
+    /**
+     * 根据name查询
+     * @param name
+     * @return
+     */
+    @Override
+    public Permission getResourcesByName(String name) {return permissionDao.getResourcesByName(name);}
+
+    /**
+     * 获取所有权限，返回tree
+     * @return
+     */
+    @Override
+    public List<TreeObject> queryPermissionTree() {
+
+        LinkedHashMap<String, String> orderby = new LinkedHashMap<String, String>();
+        orderby.put("fdOrders", "desc");
+        //排序查询所有权限list
+        List<Permission> permissions = permissionDao.query(Permission.class,-1,-1,orderby).getResultlist();
+        List<TreeObject> list = new ArrayList<TreeObject>();
+        for (Permission p : permissions) {
+            TreeObject ts = new TreeObject();
+            ts.setId(p.getFdId());
+            ts.setName(p.getFdPermissionName());
+            ts.setParentId(p.getFdPParentId());
+            ts.setResUrl(p.getFdUrl());
+            ts.setResKey(p.getFdPermissionKey());
+            list.add(ts);
+        }
+        TreeUtil treeUtil = new TreeUtil();
+        List<TreeObject> ns = treeUtil.getChildTreeObjects(list, 0);
+        return ns;
+    }
+
+    /**
+     * 根据角色ID查询权限
+     * @param roleId
+     * @return
+     */
+    @Override
+    public List<Permission> queryPermissionByRoleId(Integer roleId) {
+        Role role = roleDao.find(Role.class, roleId);
+        return role.getPermissions();
+    }
+
+    /**
+     * 保存编辑操作
+     * @param permission
+     */
+    @Override
+    public void saveUpdate(Permission permission) {
+
+    }
+
+    /**
+     * 删除权限
+     * @param permissionId
+     */
+    @Override
+    public void delete(Integer permissionId) {
+        Permission permission = this.findByPrimaryKey(permissionId);
+        //删除角色权限中间表
+        rolePermissionDao.deleteByPermission(permissionId);
+        permissionDao.remove(Permission.class,permission.getFdId());
+    }
+
+
+    /**
+     * 获取子级权限id集合
+     *
+     * @param parentId
+     * @param permissions
+     * @return
+     */
+    public static List<Integer> getChildrenPermissionIds(Integer parentId, List<Permission> permissions) {
+        List<Integer> list = new ArrayList<Integer>();
+        for (Permission permission : permissions) {
+            if ((parentId == null && permission.getFdPParentId() == null) || (parentId != null && permission.getFdPParentId() != null && parentId.intValue() == permission.getFdPParentId().intValue())) {
+                list.add(permission.getFdId());
+                list.addAll(getChildrenPermissionIds(permission.getFdId(), permissions));
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 获取根权限
+     *
+     * @param permissionList
+     * @return
+     */
+    private List<Permission> getRootPermissions(List<Permission> permissionList) {
+        List<Permission> rootPermissions = new ArrayList<Permission>();
+        for (Permission permission : permissionList) {
+            //如果父级id是null
+            if (permission.getFdPParentId() == null) {
+                rootPermissions.add(permission);
+                continue;
+            }
+            //根据权限ID获取权限
+            Permission parentPermission = permissionDao.getPermissionById(permissionList, permission.getFdPParentId().intValue());
+            if (parentPermission == null) {
+                rootPermissions.add(permission);
+            }
+        }
+        return rootPermissions;
+    }
+
+    private static boolean isKeyExist(List<Permission> list, String key) {
+        for (Permission permission : list) {
+            if (permission.getFdPermissionKey().equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}

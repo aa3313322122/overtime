@@ -1,0 +1,39 @@
+package com.puban.overtime.authority.dao.impl;
+
+import com.puban.framework.core.dao.impl.BaseDaoImpl;
+import com.puban.framework.core.page.QueryResult;
+import com.puban.overtime.authority.dao.IUserDao;
+import com.puban.overtime.authority.model.User;
+import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: UserDaoImpl
+ * @Description:
+ * @date: 2016/5/18
+ */
+@Repository
+public class UserDaoImpl extends BaseDaoImpl<User> implements IUserDao {
+    /**
+     * 根据账号查询信息
+     * @param name
+     * @return
+     */
+    @Override
+    public User getUserInfoByName(String name) {
+        /** 查询条件 **/
+        List<Object> paramterList = new ArrayList<Object>();
+        /** where **/
+        StringBuffer wherejpql = new StringBuffer(" fdUserName=:p1 ");
+        paramterList.add(name);
+        QueryResult<User> queryResult = this.query(User.class, -1, -1, wherejpql.toString(), paramterList.toArray());
+        User user = new User();
+        for (int i = 0; queryResult.getResultlist() != null && i < queryResult.getResultlist().size(); i++) {
+            user = queryResult.getResultlist().get(i);
+        }
+        return user;
+    }
+}

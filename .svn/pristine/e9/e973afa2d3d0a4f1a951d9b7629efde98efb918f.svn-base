@@ -1,0 +1,346 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<!doctype html>
+<!--[if lt IE 7 ]><html class="ie6" lang="zh-cn"><![endif]-->
+<!--[if IE 7 ]><html class="ie7" lang="zh-cn"><![endif]-->
+<!--[if IE 8 ]><html class="ie8" lang="zh-cn"><![endif]-->
+<!--[if IE 9 ]><html class="ie9" lang="zh-cn"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html class="" lang="zh-cn"><!--<![endif]-->
+<head>
+<meta name="description" content="Dashboard" />
+<meta content="text/html;charset=utf-8;text/x-component" http-equiv="Content-Type">
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+<meta name="referrer" content="always">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>普伴资本房产抵押系统</title>
+<%@ include file="core/public_style.jsp" %>
+  
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/resources/core/style/index.css">
+</head>
+
+<body>
+<%@ include file="core/loading.jsp" %>
+<%@ include file="core/topbar.jsp" %>
+
+<!-- Main Container -->
+<div class="main-container container-fluid">
+     <!-- Page Container -->
+     <div class="page-container">
+     	<%@ include file="core/pageSidebar.jsp" %>
+         
+         <!-- Page Content -->
+         <div class="page-content">
+	         <!-- 面包屑导航 -->
+	         <div class="page-breadcrumbs">
+	             <ul class="breadcrumb">
+	                 <!-- 您的位置： -->
+	                 <li>
+	                     <i class="fa fa-home"></i>
+	                     <a href="index.html" target="_blank">首页</a>
+	                 </li>
+	                 <li class="active">已申请</li>
+	             </ul>
+	         </div>
+	         <!-- end 面包屑导航 -->
+             
+             <!-- 快捷操作 -->
+             <%@ include file="core/pageHeader.jsp" %>
+             
+             <!-- Page Body -->
+             <div class="page-body">
+                 <!-- 快捷入口 -->
+				 <%@ include file="core/pageQuickEntry.jsp" %>
+				 
+                 <!-- 条件查询 -->
+                 <div class="row">
+                     <div class="col-lg-12 col-sm-12 col-xs-12">
+                         <div class="widget">
+                             <div class="widget-header bordered-left bordered-blue">
+                                 <span class="widget-caption">条件查询</span>
+                             </div>
+                             <div class="widget-body bordered-left bordered-warning">
+                                 <form class="form-inline form-inline-y clearfix" role="form">
+                                     <div class="form-group">
+                                         <label class="sr-only" for="borrowName">借款人名称</label>
+                                         <input type="input" class="form-control" id="borrowName" placeholder="借款人名称">
+                                     </div>
+                                     <div class="form-group">
+                                         <label class="sr-only" for="borrowBal">借款金额</label>
+                                         <input type="input" class="form-control" id="borrowBal" placeholder="借款金额">
+                                     </div> 
+                                     <div class="form-group">                                         
+                                         <select class="" name="simpledatatable_length" aria-controls="simpledatatable" id="search_select">
+                                         <option value="请选择 ">请选择 </option>
+                                         <option value="下拉1">下拉1</option>
+                                         <option value="下拉2">下拉2</option>
+                                         <option value="下拉3">下拉3</option>
+                                         </select> 
+                                     </div>
+                                     <div class="form-group">
+                                         <label class="sr-only" for="borrowBal">借款金额</label>
+                                         <input type="input" class="form-control" placeholder="借款金额">
+                                     </div>                                       
+                                     <button type="submit" class="btn btn-default">查询</button>
+                                     <div class="right">
+                                         <a class="btn btn-default purple add-y" href="add.html"> <i class="fa fa-plus"></i> 添加 </a>
+                                         <a class="btn btn-danger delete-y" href="#"> <i class="fa fa-trash-o"></i> 删除 </a>
+                                     </div>
+                                 </form>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                 <!-- end 条件查询 -->
+                 
+                 <!-- start 列表 -->
+                 <div class="row">
+                     <div class="col-xs-12 col-md-12">
+                         <div class="widget">
+                             
+                             <div class="widget-body no-padding">
+                                 <table class="table table-bordered table-hover table-striped table-y" id="searchable">
+                                     <thead class="bordered-darkorange">
+                                         <tr role="row">
+                                             <th class="sorting desc-none">
+                                                 <div class="task-check">
+                                                     <label>
+                                                         <input type="checkbox">
+                                                         <span class="checkbox_default"></span>
+                                                     </label>
+                                                 </div>
+                                             </th>
+                                             <th class="sorting_desc">编号</th>
+                                             <th class="sorting desc-none">借款人姓名</th>
+                                             <th class="sorting_asc">借款金额</th>
+                                             <th class="sorting">借款期限</th>
+                                             <th class="sorting desc-none">证件号码</th>
+                                             <th class="sorting desc-none">操作</th>
+                                         </tr>
+                                     </thead>
+
+                                     <!-- start 数据循环 -->
+                                     <tbody>
+                                         <tr>
+                                             <td class=" sorting_1">
+                                                 <div class="task-check">
+                                                     <label>
+                                                         <input type="checkbox">
+                                                         <span class="checkbox_default"></span>
+                                                     </label>
+                                                 </div>
+                                             </td>
+                                             <td class=" ">1</td>
+                                             <td class=" ">胡为民</td>
+                                             <td class="center ">50万</td>
+                                             <td class="center ">10个月</td>
+                                             <td class="center ">422800120105487962</td>
+                                             <td class="center "><a class="btn btn-yellow btn-xs" href="#">
+                                                 <i class="fa fa-bell-o"></i>
+                                                 催办
+                                                 </a>                                                    
+                                             </td>
+                                         </tr>
+                                         <tr>
+                                             <td class=" sorting_1">
+                                                 <div class="task-check">
+                                                     <label>
+                                                         <input type="checkbox">
+                                                         <span class="checkbox_default"></span>
+                                                     </label>
+                                                 </div>
+                                             </td>
+                                             <td class=" ">2</td>
+                                             <td class=" ">夏凯</td>
+                                             <td class="center ">30万</td>
+                                             <td class="center ">16个月</td>
+                                             <td class="center ">422800120105487962</td>
+                                             <td class="center "><a class="btn btn-info btn-xs edit" href="#">
+                                                 <i class="fa fa-edit"></i>
+                                                 修改
+                                                 </a>                                                    
+                                             </td>
+                                         </tr>
+                                         <tr>
+                                             <td class=" sorting_1">
+                                                 <div class="task-check">
+                                                     <label>
+                                                         <input type="checkbox">
+                                                         <span class="checkbox_default"></span>
+                                                     </label>
+                                                 </div>
+                                             </td>
+                                             <td class=" ">3</td>
+                                             <td class=" ">林凡</td>
+                                             <td class="center ">100万</td>
+                                             <td class="center ">20个月</td>
+                                             <td class="center ">422800120105487962</td>
+                                             <td class="center "><a class="btn btn-danger btn-xs delete" href="#">
+                                                 <i class="fa fa-trash-o"></i>
+                                                 删除
+                                                 </a>                                                    
+                                             </td>
+                                         </tr>
+                                         <tr>
+                                             <td class=" sorting_1">
+                                                 <div class="task-check">
+                                                     <label>
+                                                         <input type="checkbox">
+                                                         <span class="checkbox_default"></span>
+                                                     </label>
+                                                 </div>
+                                             </td>
+                                             <td class=" ">4</td>
+                                             <td class=" ">章新凯</td>
+                                             <td class="center ">500万</td>
+                                             <td class="center ">30个月</td>
+                                             <td class="center ">422800120105487962</td>
+                                             <td class="center "><a class="btn btn-default purple btn-xs" href="#">
+                                                 <i class="fa fa-plus"></i>
+                                                 添加
+                                                 </a>                                                    
+                                             </td>
+                                         </tr>
+                                         <tr>
+                                             <td class=" sorting_1">
+                                                 <div class="task-check">
+                                                     <label>
+                                                         <input type="checkbox">
+                                                         <span class="checkbox_default"></span>
+                                                     </label>
+                                                 </div>
+                                             </td>
+                                             <td class=" ">5</td>
+                                             <td class=" ">林凡</td>
+                                             <td class="center ">100万</td>
+                                             <td class="center ">20个月</td>
+                                             <td class="center ">422800120105487962</td>
+                                             <td class="center "><a class="btn btn-yellow btn-xs" href="#">
+                                                 <i class="fa fa-bell-o"></i>
+                                                 催办
+                                                 </a>                                                    
+                                             </td>
+                                         </tr>
+                                         <tr>
+                                             <td class=" sorting_1">
+                                                 <div class="task-check">
+                                                     <label>
+                                                         <input type="checkbox">
+                                                         <span class="checkbox_default"></span>
+                                                     </label>
+                                                 </div>
+                                             </td>
+                                             <td class=" ">6</td>
+                                             <td class=" ">章新凯</td>
+                                             <td class="center ">500万</td>
+                                             <td class="center ">30个月</td>
+                                             <td class="center ">422800120105487962</td>
+                                             <td class="center "><a class="btn btn-yellow btn-xs" href="#">
+                                                 <i class="fa fa-bell-o"></i>
+                                                 催办
+                                                 </a>                                                    
+                                             </td>
+                                         </tr>
+                                         <tr>
+                                             <td class=" sorting_1">
+                                                 <div class="task-check">
+                                                     <label>
+                                                         <input type="checkbox">
+                                                         <span class="checkbox_default"></span>
+                                                     </label>
+                                                 </div>
+                                             </td>
+                                             <td class=" ">7</td>
+                                             <td class=" ">林凡</td>
+                                             <td class="center ">100万</td>
+                                             <td class="center ">20个月</td>
+                                             <td class="center ">422800120105487962</td>
+                                             <td class="center "><a class="btn btn-yellow btn-xs" href="#">
+                                                 <i class="fa fa-bell-o"></i>
+                                                 催办
+                                                 </a>                                                    
+                                             </td>
+                                         </tr>
+                                         <tr>
+                                             <td class=" sorting_1">
+                                                 <div class="task-check">
+                                                     <label>
+                                                         <input type="checkbox">
+                                                         <span class="checkbox_default"></span>
+                                                     </label>
+                                                 </div>
+                                             </td>
+                                             <td class=" ">8</td>
+                                             <td class=" ">章新凯</td>
+                                             <td class="center ">500万</td>
+                                             <td class="center ">30个月</td>
+                                             <td class="center ">422800120105487962</td>
+                                             <td class="center "><a class="btn btn-yellow btn-xs" href="#">
+                                                 <i class="fa fa-bell-o"></i>
+                                                 催办
+                                                 </a>                                                    
+                                             </td>
+                                         </tr>
+                                         <tr>
+                                             <td class=" sorting_1">
+                                                 <div class="task-check">
+                                                     <label>
+                                                         <input type="checkbox">
+                                                         <span class="checkbox_default"></span>
+                                                     </label>
+                                                 </div>
+                                             </td>
+                                             <td class=" ">9</td>
+                                             <td class=" ">林凡</td>
+                                             <td class="center ">100万</td>
+                                             <td class="center ">20个月</td>
+                                             <td class="center ">422800120105487962</td>
+                                             <td class="center "><a class="btn btn-yellow btn-xs" href="#">
+                                                 <i class="fa fa-bell-o"></i>
+                                                 催办
+                                                 </a>                                                    
+                                             </td>
+                                         </tr>
+                                         <tr>
+                                             <td class=" sorting_1">
+                                                 <div class="task-check">
+                                                     <label>
+                                                         <input type="checkbox">
+                                                         <span class="checkbox_default"></span>
+                                                     </label>
+                                                 </div>
+                                             </td>
+                                             <td class=" ">10</td>
+                                             <td class=" ">章新凯</td>
+                                             <td class="center ">500万</td>
+                                             <td class="center ">30个月</td>
+                                             <td class="center ">422800120105487962</td>
+                                             <td class="center "><a class="btn btn-yellow btn-xs" href="#">
+                                                 <i class="fa fa-bell-o"></i>
+                                                 催办
+                                                 </a>                                                    
+                                             </td>
+                                         </tr>
+                                     </tbody>
+                                     <!-- end 数据循环 -->
+                                 </table>
+
+                                 <%@ include file="core/splitPage.jsp" %>
+
+                             </div>                                
+                         </div>
+                     </div>
+                 </div>
+                 <!-- end 列表 -->
+
+             </div>
+             <!-- /Page Body -->
+         </div>
+         <!-- /Page Content -->
+     </div>
+     <!-- /Page Container -->
+
+ </div>
+
+<%@ include file="core/public_script.jsp" %>
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : com.mysql.jdbc.Driver
+Source Server Version : 50624
+Source Host           : localhost:3306
+Source Database       : urp
+
+Target Server Type    : MYSQL
+Target Server Version : 50624
+File Encoding         : 65001
+
+Date: 2016-05-31 17:28:02
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for t_user_info
+-- ----------------------------
+DROP TABLE IF EXISTS `t_user_info`;
+CREATE TABLE `t_user_info` (
+  `fd_id` int(11) NOT NULL AUTO_INCREMENT,
+  `fd_password` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `fd_user_name` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `fd_email` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `fd_mobile_phone` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  PRIMARY KEY (`fd_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of t_user_info
+-- ----------------------------
+INSERT INTO `t_user_info` VALUES ('1', 'yongsama', 'yongsama', 'yongsama@foxmail.com', '18390097847');
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for t_role_info
+-- ----------------------------
+DROP TABLE IF EXISTS `t_role_info`;
+CREATE TABLE `t_role_info` (
+  `fd_id` int(11) NOT NULL AUTO_INCREMENT,
+  `fd_role_key` varchar(255) DEFAULT NULL,
+  `fd_role_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `fd_role_status` int(11) DEFAULT NULL,
+  PRIMARY KEY (`fd_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of t_role_info
+-- ----------------------------
+INSERT INTO `t_role_info` VALUES ('1', 'admin', '管理员', '1');
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for t_permission_info
+-- ----------------------------
+DROP TABLE IF EXISTS `t_permission_info`;
+CREATE TABLE `t_permission_info` (
+  `fd_id` int(11) NOT NULL AUTO_INCREMENT,
+  `fd_orders` int(11) DEFAULT NULL,
+  `fd_p_parent_id` int(11) DEFAULT NULL,
+  `fd_permission_key` varchar(255) DEFAULT NULL,
+  `fd_permission_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `fd_url` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  PRIMARY KEY (`fd_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of t_permission_info
+-- ----------------------------
+INSERT INTO `t_permission_info` VALUES ('1', '999', '0', 'system', '系统设置', '/');
+INSERT INTO `t_permission_info` VALUES ('2', '1', '1', 'role', '角色管理', '/role/roleList');
+INSERT INTO `t_permission_info` VALUES ('3', '2', '1', 'user', '用户管理', '/user/userList');
+INSERT INTO `t_permission_info` VALUES ('4', '3', '1', 'permission', '权限管理1', '/permission/list');
+INSERT INTO `t_permission_info` VALUES ('5', '5', '4', 'test', '测试1', '/permission/test');
+INSERT INTO `t_permission_info` VALUES ('6', '999', '2', 'sdre', '普分为', '/controller/tesre');
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for t_user_role
+-- ----------------------------
+DROP TABLE IF EXISTS `t_user_role`;
+CREATE TABLE `t_user_role` (
+  `fd_id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_id` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`fd_id`),
+  KEY `FK_4uvv76e86ms8ru0kk9s01d3s2` (`role_id`),
+  KEY `FK_kefwen29p9h9ilvry31mgyc94` (`user_id`),
+  KEY `FK_7i1dwl99y9k60t3510m4haol1` (`fd_id`),
+  CONSTRAINT `FK_4uvv76e86ms8ru0kk9s01d3s2` FOREIGN KEY (`role_id`) REFERENCES `t_role_info` (`fd_id`),
+  CONSTRAINT `FK_kefwen29p9h9ilvry31mgyc94` FOREIGN KEY (`user_id`) REFERENCES `t_user_info` (`fd_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of t_user_role
+-- ----------------------------
+INSERT INTO `t_user_role` VALUES ('1', '1', '1');
+
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for t_role_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `t_role_permission`;
+CREATE TABLE `t_role_permission` (
+  `fd_id` int(11) NOT NULL AUTO_INCREMENT,
+  `permission_id` int(11) DEFAULT NULL,
+  `role_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`fd_id`),
+  KEY `FK_nkhhl7rlqqsu5goufwn1udr0e` (`permission_id`),
+  KEY `FK_n0gk0jwxlfbi5vbmf43r0kcwl` (`role_id`),
+  CONSTRAINT `FK_n0gk0jwxlfbi5vbmf43r0kcwl` FOREIGN KEY (`role_id`) REFERENCES `t_role_info` (`fd_id`),
+  CONSTRAINT `FK_nkhhl7rlqqsu5goufwn1udr0e` FOREIGN KEY (`permission_id`) REFERENCES `t_permission_info` (`fd_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of t_role_permission
+-- ----------------------------
+INSERT INTO `t_role_permission` VALUES ('1', '1', '1');
+INSERT INTO `t_role_permission` VALUES ('2', '2', '1');
+INSERT INTO `t_role_permission` VALUES ('3', '3', '1');
+INSERT INTO `t_role_permission` VALUES ('4', '4', '1');
+INSERT INTO `t_role_permission` VALUES ('5', '5', '1');
+INSERT INTO `t_role_permission` VALUES ('6', '6', '1');

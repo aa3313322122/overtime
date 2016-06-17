@@ -1,0 +1,80 @@
+package com.puban.overtime.apply.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.puban.framework.core.service.impl.BaseServiceImpl;
+<<<<<<< .mine
+=======
+import com.puban.overtime.apply.dao.IApplyDao;
+>>>>>>> .r5159
+import com.puban.overtime.apply.model.OverTime;
+import com.puban.overtime.apply.service.IApplyService;
+import com.puban.overtime.authority.model.User;
+import com.puban.overtime.authority.service.IUserService;
+import com.puban.overtime.task.model.Task;
+import com.puban.overtime.task.service.ITaskService;
+
+@Service
+public class ApplyServiceImpl extends BaseServiceImpl<OverTime> implements IApplyService
+{
+	@Autowired
+	IUserService userService;
+	
+	@Autowired
+	ITaskService taskService;
+	
+	/**加班申请**/
+	public void saveOverTime(OverTime overTime)
+	{
+		Integer userId = overTime.getUser().getFdId();
+		Integer taskId = overTime.getTask().getFdId();
+		overTime = selectUser(userId, overTime);
+		overTime = selectTask(taskId, overTime);
+		if(null == overTime)
+		{
+			this.save(overTime);
+		}
+		
+	}
+	
+	/**查找加班申请**/
+	public OverTime findOverTime()
+	{
+		return this.findByPrimaryKey(7);
+	}
+	
+	/**回填审批意见**/
+	public void updateOverTime(Integer ovetTimeId, String advice)
+	{
+		OverTime overTime = this.findByPrimaryKey(ovetTimeId);
+		if(null != overTime)
+		{
+			overTime.setFdAdvice(advice);
+			this.update(overTime);
+		}
+	}
+	
+	private OverTime selectUser(Integer userId, OverTime overTime)
+	{
+		User user = userService.findByPrimaryKey(userId);
+		if(null != user)
+		{
+			overTime.setUser(user);
+			return overTime;
+		}
+		return null;
+	}
+	
+	private OverTime selectTask(Integer taskId, OverTime overTime)
+	{
+		Task task = taskService.findByPrimaryKey(taskId);
+		if(null != task)
+		{
+			overTime.setTask(task);
+			return overTime;
+		}
+		return null;
+	}
+
+}

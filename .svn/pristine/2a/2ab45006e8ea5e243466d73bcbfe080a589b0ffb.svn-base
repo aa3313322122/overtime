@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd  
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+    <!-- 項目自定义拦截器Realm -->
+    <bean id="myShiro" class="com.puban.overtime.authority.shiro.UserRealm"></bean>
+
+    <!-- 配置权限管理器 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <!-- ref对应我们写的realm  MyShiro -->
+        <property name="realm" ref="myShiro"/>
+        <!-- 使用下面配置的缓存管理器 -->
+        <property name="cacheManager" ref="cacheManager"/>
+    </bean>
+
+    <!-- 配置shiro的过滤器工厂类，id- shiroFilter要和我们在web.xml中配置的过滤器一致 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <!-- 调用我们配置的权限管理器 -->
+        <property name="securityManager" ref="securityManager"/>
+        <!-- 配置登录请求地址 -->
+        <property name="loginUrl" value="/userlogin/login/"/>
+        <!-- 配置我们在登录页登录成功后的跳转地址，如果你访问的是非/login地址，则跳到您访问的地址 -->
+        <!--<property name="successUrl" value="/userlogin/index/"/>-->
+        <!-- 如果您请求的资源不再您的权限范围，则跳转到/403请求地址 -->
+        <property name="unauthorizedUrl" value="/userlogin/403"/>
+        <!-- 权限配置 -->
+        <property name="filterChainDefinitions">
+            <value>
+                <!-- anon表示此地址不需要任何权限即可访问 -->
+                /view/img/**=anon
+                /view/script/**=anon
+                /view/style/**=anon
+                /userlogin/check-login=anon
+                <!--所有的请求(除去配置的静态资源请求或请求地址为anon的请求)都要通过登录验证,如果未登录则跳到/login-->
+                /user/list=roles[admin]
+                /user/userinfo=roles[admin]
+                /user/userList=roles[admin]
+                /user/edit=roles[admin]
+                /user/edituser=roles[admin]
+                /user/add=roles[admin]
+                /user/saveuser=roles[admin]
+                /user/delete=roles[admin]
+                /role/roleList=roles[admin]
+                /role/list=roles[admin]
+                /role/add=roles[admin]
+                /role/addRole=roles[admin]
+                /role/edit=roles[admin]
+                /role/editRole=roles[admin]
+                /role/delete=roles[admin]
+                /permission/plist=roles[admin]
+                /permission/list=roles[admin]
+                /permission/add=roles[admin]
+                /permission/saveadd=roles[admin]
+                /permission/delete=roles[admin]
+                /permission/edit=roles[admin]
+                /permission/saveedit=roles[admin]
+                /permission/authorization=roles[admin]
+                /permission/get_role_per=roles[admin]
+                /permission/add_role_per=roles[admin]
+                /apply/admin=roles[admin]
+                /apply/listselectuser=roles[admin]
+                /apply/listbystatus=roles[admin]
+                /apply/listall=roles[admin]
+                /apply/updatestatus=roles[admin]
+                /task/listnormal_admin=roles[admin]
+                /task/listgive_admin=roles[admin]
+                /task/giveall=roles[admin]
+                /task/normalall=roles[admin]
+                /task/updatenormal=roles[admin]
+                /task/updategive=roles[admin]
+                /apply/show=roles[dest]
+                /apply/add=roles[dest]
+                /apply/findapply=roles[dest]
+                /apply/list=roles[dest]
+                /apply/update=roles[dest]
+                /apply/updatestatus=roles[dest]
+                /task/add=roles[dest]
+                /task/addnormal=roles[dest]
+                /task/findnormal=roles[dest]
+                /task/findtask=roles[dest]
+                /task/updatenormal=roles[dest]
+                /task/listnormal=roles[dest]
+                /task/listgive=roles[dest]
+                /task/listbyuser=roles[dest]
+                /apply/show=roles[staff]
+                /apply/add=roles[staff]
+                /apply/findapply=roles[staff]
+                /apply/list=roles[staff]
+                /apply/update=roles[staff]
+                /apply/updatestatus=roles[staff]
+                /task/add=roles[staff]
+                /task/addnormal=roles[staff]
+                /task/findnormal=roles[staff]
+                /task/findtask=roles[staff]
+                /task/updatenormal=roles[staff]
+                /task/updategive=roles[staff]
+                /task/listnormal=roles[staff]
+                /task/listgive=roles[staff]
+                /task/listbyuser=roles[staff]
+                /** = authc
+
+            </value>
+        </property>
+    </bean>
+    <bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager"/>
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+    <!-- remenberMe配置 -->
+    <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="rememberMe"/>
+        <property name="httpOnly" value="true"/>
+        <property name="maxAge" value="2592000"/>
+        <!-- 30天 -->
+    </bean>
+    <!-- rememberMe管理器 -->
+    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+        <!-- rememberMe cookie加密的密钥 建议每个项目都不一样 默认AES算法 密钥长度（128 256 512 位）-->
+        <property name="cipherKey" value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}"/>
+        <property name="cookie" ref="rememberMeCookie"/>
+    </bean>
+
+</beans>  

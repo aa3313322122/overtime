@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="  
+        http://www.springframework.org/schema/beans       
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+
+	<!-- 用户 -->
+	<bean id="userDao" class="com.puban.overtime.authority.dao.impl.UserDaoImpl" parent="baseDao"/>
+	<bean id="userService" class="com.puban.overtime.authority.service.impl.UserServiceImpl" parent="baseService"/>
+
+	<!-- 角色 -->
+	<bean id="roleDao" class="com.puban.overtime.authority.dao.impl.RoleDaoImpl" parent="baseDao"/>
+<!--	<bean id="roleService" class="com.puban.pudaitong.authority.service.impl.RoleServiceImpl" parent="baseService"/>-->
+
+	<!-- 用户角色 -->
+	<bean id="userRoleDao" class="com.puban.overtime.authority.dao.impl.UserRoleDaoImpl" parent="baseDao"/>
+
+	<!-- 权限 -->
+	<bean id="permissionDao" class="com.puban.overtime.authority.dao.impl.PermissionDaoImpl" parent="baseDao"/>
+
+	<!-- 角色权限 -->
+	<bean id="rolePermissionDao" class="com.puban.overtime.authority.dao.impl.RolePermissionImpl" parent="baseDao"/>
+</beans>

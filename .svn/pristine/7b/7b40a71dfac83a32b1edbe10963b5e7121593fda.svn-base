@@ -1,0 +1,119 @@
+package com.puban.overtime.apply.controller;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.puban.framework.core.controller.BaseController;
+import com.puban.framework.core.page.PageView;
+import com.puban.overtime.apply.model.OverTime;
+import com.puban.overtime.apply.service.IApplyService;
+
+@Controller
+@RequestMapping(value="/apply")
+public class ApplyController extends BaseController
+{
+	@Autowired
+	IApplyService applyService;
+	
+	public void queryOverTime(Integer firstindex, Integer maxresult)
+	{
+		applyService.queryOverTime(firstindex, maxresult);
+	}
+	
+	@RequestMapping("/show")
+	public String showApply()
+	{
+		return "/view/apply/apply";
+	}
+	
+	@RequestMapping("/add")
+	@ResponseBody
+	public String applyOverTime(OverTime overTime)
+	{
+		if(applyService.saveOverTime(overTime))
+		{
+			return "success";
+		}
+		return null;
+	}
+	
+	@RequestMapping(value="/findapply", method = RequestMethod.POST, produces =  {"application/json;charset=UTF-8"})
+	@ResponseBody
+	public String findApply(Integer applyId, Model model)
+	{
+		if(null == applyId)
+		{
+			return null;
+		}
+		OverTime overTime = applyService.findByPrimaryKey(applyId);
+		return JSONObject.toJSONString(overTime);
+	}
+	
+	/** 展示该用户的**/
+	@RequestMapping("/list")
+	public String queryOverTimeListByUser(Integer currentpage, Integer selectPageSize, Model model, HttpServletRequest req)
+	{
+		if(null == currentpage || currentpage < 1)
+		{
+			currentpage = 1;
+		}
+		if(null == selectPageSize || selectPageSize < 1)
+		{
+			selectPageSize = 5;
+		}
+		Integer userId = (Integer) req.getSession().getAttribute("userId");
+		PageView<OverTime> pageView = applyService.queryOverTimeByUser(2, currentpage, selectPageSize);
+		model.addAttribute(pageView);
+		return "/view/apply/overtimeList";
+	}
+	
+	/** 展示所有用户的**/
+	@RequestMapping("/listall")
+	public String queryOverTimeList(Integer currentpage, Integer selectPageSize, Model model)
+	{
+		if(null == currentpage || currentpage < 1)
+		{
+			currentpage = 1;
+		}
+		if(null == selectPageSize || selectPageSize < 1)
+		{
+			selectPageSize = 5;
+		}
+		PageView<OverTime> pageView = applyService.queryOverTime(currentpage, selectPageSize);
+		model.addAttribute(pageView);
+		return "/view/apply/approval";
+	}
+	
+	/** 根据审批状态展示所有用户的**/
+	@RequestMapping("/listbystatus")
+	public String queryOverTimeListByStatus(Integer status, Integer currentpage, Integer selectPageSize, Model model)
+	{
+		if(null == currentpage || currentpage < 1)
+		{
+			currentpage = 1;
+		}
+		if(null == selectPageSize || selectPageSize < 1)
+		{
+			selectPageSize = 5;
+		}
+		PageView<OverTime> pageView = applyService.queryOverTimeByStatus(status, currentpage, selectPageSize);
+		model.addAttribute(pageView);
+		return "/view/apply/approval";
+	}
+	
+	@RequestMapping("/update")
+	@ResponseBody
+	public String updateOverTime(OverTime overTime)
+	{
+		applyService.update(overTime);
+		return "success";
+	}
+	
+}

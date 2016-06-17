@@ -1,0 +1,135 @@
+package com.puban.overtime.authority.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.DisabledAccountException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.alibaba.fastjson.JSON;
+import com.puban.framework.core.controller.BaseController;
+import com.puban.overtime.authority.model.Role;
+import com.puban.overtime.authority.model.User;
+import com.puban.overtime.authority.service.IUserRoleService;
+import com.puban.overtime.authority.service.IUserService;
+import com.puban.overtime.authority.shiro.ResultVO;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: UserController
+ * @Description: 用户登录、注销
+ * @date: 2016/5/23
+ */
+
+@Controller
+@RequestMapping(value = "/userlogin")
+public class UserController extends BaseController {
+    @Autowired
+    private IUserService userService;
+
+    @Autowired
+    private IUserRoleService userRoleService;
+
+
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String loginForm(Model model) {
+       model.addAttribute("user", new User());
+        return "view/login";
+    }
+
+    @RequestMapping(value = "/check-login", method = RequestMethod.POST)
+    public void login(String username,String password , boolean rememberMe, HttpServletResponse response, HttpServletRequest request) {
+        ResultVO result = new ResultVO();
+        if (StringUtils.isBlank(username)) {
+            result.setMsg("用户名不能为空");
+            result.setOk(false);
+        }
+        if (StringUtils.isBlank(password)) {
+            result.setMsg("密码不能为空");
+            result.setOk(false);
+        }
+        //使用权限工具验证用户登录
+        UsernamePasswordToken token = new UsernamePasswordToken(username,password);
+        token.setRememberMe(rememberMe);
+        Subject subject = SecurityUtils.getSubject();
+        if(result.isOk()){
+            try {
+                subject.login(token);
+                User userInfo = userService.getUserInfoByName(username);
+                //根据用户ID查询其角色
+                List<Role> roles = userRoleService.findRoleByUserId(userInfo.getFdId());
+
+                //进行保存操作，存储用户的roles
+                userService.saveRoles(userInfo, roles);
+                //根据用户名查询用户，将用户信息放入session
+                HttpSession session = request.getSession();
+                session.setAttribute("loginName", userInfo.getFdUserName());
+                session.setAttribute("loginId", userInfo.getFdId());
+
+                for (int i = 0; i < roles.size(); i++) {
+                    Role role = (Role) roles.get(i);
+                    String key = role.getFdRoleKey();
+                    if(key.equals("admin")){  //管理员
+                        result.setLoginStatus(1);
+                    }else if(key.equals("dest")){ //分配者
+                        result.setLoginStatus(2);
+                    }else if(key.equals("staff")){  //普通员工
+                        result.setLoginStatus(3);
+                    }
+                }
+            } catch (UnknownAccountException e) {
+                result.setMsg("账号不存在");
+                result.setOk(false);
+            } catch (DisabledAccountException e) {
+                result.setMsg("账号未启用");
+                result.setOk(false);
+            } catch (IncorrectCredentialsException e) {
+                result.setMsg("密码错误");
+                result.setOk(false);
+            } catch (RuntimeException e) {
+                result.setMsg("未知错误,请联系管理员");
+                result.setOk(false);
+            }
+        }
+        ajaxJson(JSON.toJSONString(result), response);
+    }
+
+    /**
+     * 退出
+     * @param redirectAttributes
+     * @return
+     */
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logout(RedirectAttributes redirectAttributes) {
+        //使用权限管理工具进行用户的退出，跳出登录，给出提示信息
+        SecurityUtils.getSubject().logout();
+        redirectAttributes.addFlashAttribute("message", "您已安全退出");
+        return "view/login";
+    }
+
+    @RequestMapping("/403")
+    public String unauthorizedRole() {
+        return "/403";
+    }
+
+    @RequestMapping("/index")
+    public String index() {
+        return "view/sky";
+    }
+
+}

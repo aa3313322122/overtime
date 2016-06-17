@@ -1,0 +1,36 @@
+package com.puban.overtime.authority.dao;
+
+import com.puban.framework.core.dao.IBaseDao;
+import com.puban.overtime.authority.model.UserRole;
+
+import java.util.List;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: UserRoleDao
+ * @Description:
+ * @date: 2016/5/18
+ */
+public interface IUserRoleDao extends IBaseDao<UserRole> {
+    /**
+     * 根据用户ID获取角色id
+     *
+     * @param userId
+     * @return
+     */
+    List<UserRole> findRoleIdSetByUserId(int userId);
+
+
+    /**
+     * 根据角色ID删除用户角色关联表
+     *
+     * @param roleId
+     */
+    void deleteByRoleId(int roleId);
+
+    /**
+     * 根据用户ID删除用户角色关联表
+     */
+    void deleteByUserId(int userId);
+
+}

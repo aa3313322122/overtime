@@ -1,0 +1,183 @@
+package com.puban.overtime.authority.service.impl;
+
+import com.puban.framework.core.page.PageView;
+import com.puban.framework.core.page.QueryResult;
+import com.puban.framework.core.service.impl.BaseServiceImpl;
+import com.puban.overtime.authority.dao.*;
+import com.puban.overtime.authority.model.*;
+import com.puban.overtime.authority.service.IUserService;
+import com.puban.overtime.authority.shiro.ResultVO;
+import com.puban.overtime.authority.shiro.vo.UserEditVO;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: UserServiceImpl
+ * @Description:
+ * @date: 2016/5/18
+ */
+@Service
+public class UserServiceImpl extends BaseServiceImpl<User> implements IUserService {
+    @Autowired
+    private IUserDao userDao;
+    @Autowired
+    private IPermissionDao permissionDao;
+    @Autowired
+    private IRoleDao roleDao;
+    @Autowired
+    private IUserRoleDao userRoleDao;
+    @Autowired
+    private IRolePermissionDao rolePermissionDao;
+
+    /**
+     * 根据账号id获取授权
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public SimpleAuthorizationInfo getUserRolePermission(int userId) {
+        SimpleAuthorizationInfo token = new SimpleAuthorizationInfo();
+        //获取所有权限
+        List<Permission> permissionList = permissionDao.query(Permission.class).getResultlist();
+        //用户角色名字
+        Set<String> roleNameSet = new HashSet<String>();
+        //权限名字
+        Set<String> perNameSet = new HashSet<String>();
+        //获取所有角色
+        List<Role> roleList = roleDao.query(Role.class).getResultlist();
+        //根据用户id获取用户角色id
+        List<UserRole> roleIdSet = userRoleDao.findRoleIdSetByUserId(userId);
+        if (roleIdSet != null && !roleIdSet.isEmpty()) {
+            for (UserRole roleId : roleIdSet) {
+                //根据角色list的ID获取角色
+                Role role = roleDao.getInfoById(roleList, roleId.getFdRoleId());
+                if (role != null) {
+                    //将角色名称存入
+                    roleNameSet.add(role.getFdRoleKey());
+                }
+                //根据角色id获取权限id集合
+                List<RolePermission> permissionIdSet = rolePermissionDao.getPermissionIdSetByRoleId(roleId.getFdRoleId());
+                if (permissionIdSet != null && !permissionIdSet.isEmpty()) {
+                    for (RolePermission permissionId : permissionIdSet) {
+                        //根据权限list的ID获取权限
+                        Permission permission = permissionDao.getPermissionById(permissionList, permissionId.getFdPermissionId());
+                        String key = permission.getFdPermissionKey();
+                        if (StringUtils.isNotBlank(key)) {
+                            perNameSet.add(key);
+                        }
+                    }
+                }
+            }
+        }
+        //设置角色权限，将角色名称和权限key设置进token
+        token.setRoles(roleNameSet);
+        token.setStringPermissions(perNameSet);
+        return token;
+    }
+
+    @Override
+    public User getUserInfoByName(String name) {
+        return userDao.getUserInfoByName(name);
+    }
+
+    /**
+     * 用户列表条件查询
+     * @param username
+     * @param currentPage
+     * @return
+     */
+    @Override
+    public PageView<User> queryBySerach(String username, Integer currentPage) {
+        PageView<User> pageView = new PageView<User>(5, currentPage);
+        /** 查询条件 **/
+        List<Object> paramterList = new ArrayList<Object>();
+
+        if (currentPage == null) {
+            currentPage = 1;
+        }
+        int firstindex = (pageView.getCurrentpage() - 1) * pageView.getMaxresult();
+
+        LinkedHashMap<String, String> orderby = new LinkedHashMap<String, String>();
+        orderby.put("fdId", "desc");
+
+        StringBuffer whereHql = new StringBuffer();
+        whereHql.append(" 1=1 ");
+        List<Object> queryParams = new ArrayList<Object>();
+
+        if(username !=null && (!username.equals(""))){
+            int index = queryParams.size() + 1;
+            whereHql.append(" and user.fdUserName like :p" + index).append(" ");
+            queryParams.add("%" + username + "%");
+        }
+        QueryResult<User> queryResult = userDao.query(User.class,firstindex, pageView.getMaxresult(), whereHql.toString(), queryParams.toArray(), orderby);
+        pageView.setQueryResult(queryResult);
+        return pageView;
+    }
+
+    /**
+     * 新增用户
+     */
+    @Override
+    public ResultVO saveUser(String fdUserName,String fdPassword){
+
+        ResultVO resultVO = new ResultVO(true);
+
+        User usersInfo = userDao.getUserInfoByName(fdUserName);
+        if (usersInfo != null) {
+            resultVO.setOk(false);
+            resultVO.setMsg("账号已存在");
+            return resultVO;
+        }
+        //保存
+        User user = new User();
+        user.setFdUserName(fdUserName);
+        user.setFdPassword(fdPassword);
+        this.save(user);
+        resultVO.setMsg("注册成功");
+        return resultVO;
+
+
+
+
+    }
+
+    /**
+     * 删除用户
+     * @param userIds
+     * @return
+     */
+    public ResultVO deleteUser(int[] userIds) {
+        ResultVO resultVO = new ResultVO(true);
+        for (int userId : userIds) {
+            //删除账号
+            this.remove(userId);
+            //删除账号与角色关联
+            userRoleDao.deleteByUserId(userId);
+        }
+        resultVO.setMsg("删除账号成功");
+        return resultVO;
+    }
+
+    /**
+     * 修改用户信息
+     * @param editVO
+     * @return
+     */
+    @Override
+    public ResultVO editUser(UserEditVO editVO) {
+        ResultVO resultVO = new ResultVO(true);
+        User user = userDao.getUserInfoByName(editVO.getFdUserName());
+        //修改
+        user.setFdPassword(editVO.getFdPassword());
+        this.update(user);
+
+        resultVO.setMsg("修改成功");
+        return resultVO;
+    }
+}

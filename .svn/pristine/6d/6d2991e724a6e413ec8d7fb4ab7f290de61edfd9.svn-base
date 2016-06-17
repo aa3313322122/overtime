@@ -1,0 +1,24 @@
+package com.puban.overtime.task.controller;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.puban.framework.core.controller.BaseController;
+import com.puban.overtime.task.service.ITaskService;
+
+@Controller
+@RequestMapping("/task")
+public class TaskController extends BaseController
+{
+	@Resource
+	private ITaskService taskService;
+	
+	@RequestMapping("/list")
+	public void list(Model map)
+	{
+		taskService.list();
+	}
+}

@@ -1,0 +1,55 @@
+package com.puban.overtime.task.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.puban.framework.core.page.QueryResult;
+import com.puban.framework.core.service.impl.BaseServiceImpl;
+import com.puban.overtime.task.dao.ITaskDao;
+import com.puban.overtime.task.model.Task;
+import com.puban.overtime.task.service.ITaskService;
+
+/***
+ * @author wangchunping
+ * @date 2016年5月24日 上午10:43:51
+ *       <p>
+ *       Title:TaskServiceImpl
+ *       </p>
+ *       <p>
+ *       Description:任务实现类
+ *       </p>
+ */
+@Service
+public class TaskServiceImpl extends BaseServiceImpl<Task> implements ITaskService
+{
+	@Resource
+	private ITaskDao taskDao;
+
+	@Override
+	public QueryResult<Task> queryTaskList(Integer currentPage, Integer pageSzie)
+	{
+		QueryResult<Task> taskListPage = taskDao.query(Task.class, (currentPage - 1) * pageSzie, pageSzie);
+		return taskListPage;
+	}
+
+	@Override
+	public QueryResult<Task> queryMyTaskList(Integer currentPage, Integer pageSzie, Integer userId)
+	{
+		List<Object> queryParams = new ArrayList<Object>();
+		StringBuffer sb = new StringBuffer("");
+		sb.append(" 1=1 ");
+		if (userId > 0)
+		{
+			int index = queryParams.size() + 1;
+			sb.append(" and user.fdId=:p" + index).append(" ");
+			queryParams.add(userId);
+		}
+		QueryResult<Task> myTaskListPage = taskDao.query(Task.class, (currentPage - 1) * pageSzie, pageSzie, sb.toString(), queryParams.toArray());
+		return myTaskListPage;
+	}
+
+}

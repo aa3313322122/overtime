@@ -1,0 +1,22 @@
+package com.puban.overtime.authority.dao;
+
+import com.puban.framework.core.dao.IBaseDao;
+import com.puban.overtime.authority.model.RolePermission;
+
+import java.util.List;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: IRolePermission
+ * @Description:
+ * @date: 2016/5/18
+ */
+public interface IRolePermissionDao extends IBaseDao<RolePermission> {
+    /**
+     * 根据角色ID获取权限id集合
+     *
+     * @param roleId
+     * @return
+     */
+    List<Integer> getPermissionIdSetByRoleId(int roleId);
+}

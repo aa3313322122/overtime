@@ -1,0 +1,43 @@
+package com.puban.overtime.authority.dao.impl;
+
+import com.puban.framework.core.dao.impl.BaseDaoImpl;
+import com.puban.overtime.authority.dao.IUserRoleDao;
+import com.puban.overtime.authority.model.UserRole;
+
+import java.util.List;
+
+import org.hibernate.Query;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: UserRoleDaoImpl
+ * @Description:
+ * @date: 2016/5/18
+ */
+
+public class UserRoleDaoImpl extends BaseDaoImpl<UserRole> implements IUserRoleDao {
+
+    @Override
+    public List<UserRole> findRoleIdSetByUserId(int userId) {
+		Query query= getSession().createQuery(" from UserRole u  where u.fdUserId= :p1");
+		query.setInteger("p1", Integer.valueOf(userId));
+		
+		@SuppressWarnings("unchecked")
+		List<UserRole> records =query.list();
+		
+        System.out.println(records.size());
+        return records;
+    }
+
+    @Override
+    public void deleteByRoleId(int roleId) {
+        this.remove(UserRole.class,roleId);
+    }
+
+    @Override
+    public void deleteByUserId(int userId) {
+        this.remove(UserRole.class,userId);
+    }
+
+}
+

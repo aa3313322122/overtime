@@ -1,0 +1,87 @@
+package com.puban.overtime.authority.service.impl;
+
+import com.puban.framework.core.service.impl.BaseServiceImpl;
+import com.puban.overtime.authority.dao.*;
+import com.puban.overtime.authority.model.Permission;
+import com.puban.overtime.authority.model.Role;
+import com.puban.overtime.authority.model.User;
+import com.puban.overtime.authority.service.IUserService;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
+
+import javax.annotation.Resource;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: UserServiceImpl
+ * @Description:
+ * @date: 2016/5/18
+ */
+
+public class UserServiceImpl extends BaseServiceImpl<User> implements IUserService {
+    @Resource(name = "userDao")
+    private IUserDao userDao;
+    @Resource(name = "permissionDao")
+    private IPermissionDao permissionDao;
+    @Resource(name = "roleDao")
+    private IRoleDao roleDao;
+    @Resource(name = "userRoleDao")
+    private IUserRoleDao userRoleDao;
+    @Resource(name = "rolePermissionDao")
+    private IRolePermissionDao rolePermissionDao;
+
+    /**
+     * 根据账号id获取授权
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public SimpleAuthorizationInfo getUserRolePermission(int userId) {
+        SimpleAuthorizationInfo token = new SimpleAuthorizationInfo();
+        //获取所有权限
+        List<Permission> permissionList = permissionDao.query(Permission.class).getResultlist();
+        //用户角色名字
+        Set<String> roleNameSet = new HashSet<String>();
+        //权限名字
+        Set<String> perNameSet = new HashSet<String>();
+        //获取所有角色
+        List<Role> roleList = roleDao.query(Role.class).getResultlist();
+        //根据用户id获取用户角色id
+        List<Integer> roleIdSet = userRoleDao.getRoleIdSetByUserId(userId);
+        if (roleIdSet != null && !roleIdSet.isEmpty()) {
+            for (Integer roleId : roleIdSet) {
+                //根据角色list的ID获取角色
+                Role role = roleDao.getInfoById(roleList, roleId);
+                if (role != null) {
+                    //将角色名称存入
+                    roleNameSet.add(role.getFdRoleKey());
+                }
+                //根据角色id获取权限id集合
+                List<Integer> permissionIdSet = rolePermissionDao.getPermissionIdSetByRoleId(roleId);
+                if (permissionIdSet != null && !permissionIdSet.isEmpty()) {
+                    for (Integer permissionId : permissionIdSet) {
+                        //根据权限list的ID获取权限
+                        Permission permission = permissionDao.getPermissionById(permissionList, permissionId);
+                        String key = permission.getFdPermissionKey();
+                        if (StringUtils.isNotBlank(key)) {
+                            perNameSet.add(key);
+                        }
+                    }
+                }
+            }
+        }
+        //设置角色权限，将角色名称和权限key设置进token
+        token.setRoles(roleNameSet);
+        token.setStringPermissions(perNameSet);
+        return token;
+    }
+
+    @Override
+    public User getUserInfoByName(String name) {
+        return userDao.getUserInfoByName(name);
+    }
+}

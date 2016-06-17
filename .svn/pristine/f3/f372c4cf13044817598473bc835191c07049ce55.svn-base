@@ -1,0 +1,23 @@
+package com.puban.overtime.authority.dao.impl;
+
+import com.puban.framework.core.dao.impl.BaseDaoImpl;
+import com.puban.overtime.authority.dao.IRolePermissionDao;
+import com.puban.overtime.authority.model.RolePermission;
+
+import java.util.List;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: RolePermissionImpl
+ * @Description:
+ * @date: 2016/5/18
+ */
+
+public class RolePermissionImpl extends BaseDaoImpl<RolePermission> implements IRolePermissionDao {
+
+    @Override
+    public List<Integer> getPermissionIdSetByRoleId(int roleId) {
+        List<Integer> records = getSession().createQuery("select permissionId from RolePermission  where roleId=:p1").setParameter("p1", roleId).list();
+        return records;
+    }
+}

@@ -1,0 +1,32 @@
+package com.puban.overtime.authority.shiro.vo;
+
+import javax.validation.constraints.NotNull;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: UserEditVO
+ * @Description:
+ * @date: 2016/5/24
+ */
+public class UserEditVO {
+    @NotNull(message = "用户名错误")
+    private String fdUserName;
+    @NotNull(message = "密码格式错误")
+    private String fdPassword;
+
+    public String getFdUserName() {
+        return fdUserName;
+    }
+
+    public void setFdUserName(String fdUserName) {
+        this.fdUserName = fdUserName;
+    }
+
+    public String getFdPassword() {
+        return fdPassword;
+    }
+
+    public void setFdPassword(String fdPassword) {
+        this.fdPassword = fdPassword;
+    }
+}

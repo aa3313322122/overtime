@@ -1,0 +1,5 @@
+#mysql database  
+jdbc.driverClass=com.mysql.jdbc.Driver
+jdbc.jdbcUrl=jdbc:mysql://120.76.75.193:3306/pubanOverTime?useUnicode=true&characterEncoding=UTF-8
+jdbc.user=puban
+jdbc.password=puban

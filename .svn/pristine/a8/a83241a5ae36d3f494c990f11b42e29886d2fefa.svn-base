@@ -1,0 +1,26 @@
+package com.puban.overtime.authority.service;
+
+import com.puban.overtime.authority.model.UserRole;
+
+import java.util.List;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: IUserRoleService
+ * @Description:用户角色表
+ * @date: 2016/5/24
+ */
+public interface IUserRoleService {
+    /**
+     * 新增用户角色关系
+     */
+    public void save(Integer userId, Integer roleId);
+
+    /**
+     * 根据用户ID获取角色id
+     *
+     * @param userId
+     * @return
+     */
+    List<UserRole> findRoleIdSetByUserId(int userId);
+}

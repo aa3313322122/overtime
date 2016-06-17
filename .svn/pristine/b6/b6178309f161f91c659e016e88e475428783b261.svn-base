@@ -1,0 +1,50 @@
+package com.puban.overtime.authority.model;
+
+
+import com.puban.framework.core.model.BaseModel;
+
+import javax.persistence.*;
+
+/**
+ * @author zengyong@puban.com
+ * @ClassName: User
+ * @Description:用户表
+ * @date: 2016/5/18
+ */
+@Entity
+@Table(name = "t_user_info")
+public class User extends BaseModel {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer fdId;
+
+    @Column(name = "fd_user_name")
+    private String fdUserName;
+
+    @Column(name = "fd_password")
+    private String fdPassword;
+
+    public User(){}
+
+    public User(String fdUserName, String fdPassword) {
+        this.fdUserName = fdUserName;
+        this.fdPassword = fdPassword;
+    }
+
+    public Integer getFdId() {return fdId;}
+
+    public void setFdId(Integer fdId) {this.fdId = fdId;}
+
+    public String getFdUserName() {return fdUserName;}
+
+    public void setFdUserName(String fdUserName) {this.fdUserName = fdUserName;}
+
+    public String getFdPassword() {return fdPassword;}
+
+    public void setFdPassword(String fdPassword) {this.fdPassword = fdPassword;}
+
+    @Override
+    public String toString() {
+        return "Role [fdId=" + fdId + ", fdUserName=" + fdUserName + ", fdPassword=" + fdPassword + "]";
+    }
+}

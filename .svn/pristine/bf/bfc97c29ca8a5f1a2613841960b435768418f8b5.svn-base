@@ -1,0 +1,46 @@
+package com.puban.overtime.apply.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.puban.framework.core.controller.BaseController;
+import com.puban.overtime.apply.model.OverTime;
+import com.puban.overtime.apply.service.IApplyService;
+
+@Controller
+@RequestMapping(value="/apply")
+public class ApplyController extends BaseController
+{
+	@Autowired
+	IApplyService applyService;
+	
+	public void queryOverTime(Integer firstindex, Integer maxresult)
+	{
+		applyService.queryOverTime(firstindex, maxresult);
+	}
+	
+	@RequestMapping("/add")
+	public String applyOverTime(OverTime overTime)
+	{
+		if(applyService.saveOverTime(overTime))
+		{
+			return "/view/apply/apply";
+		}
+		else
+			return "/view/login";
+	}
+	
+	@RequestMapping("/list")
+	public void queryOverTimeList(Integer curPage, Integer selectPageSize)
+	{
+		applyService.queryOverTime(curPage*selectPageSize + 1, selectPageSize);
+	}
+	
+	@RequestMapping("/update")
+	public void updateOverTime(OverTime overTime)
+	{
+		applyService.saveOrUpdate(overTime);
+	}
+	
+}

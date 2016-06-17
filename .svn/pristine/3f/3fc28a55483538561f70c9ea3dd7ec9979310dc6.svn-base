@@ -1,0 +1,217 @@
+package com.puban.overtime.task.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.puban.framework.core.controller.BaseController;
+import com.puban.framework.core.page.PageView;
+import com.puban.framework.core.page.QueryResult;
+import com.puban.overtime.task.model.NormalTask;
+import com.puban.overtime.task.model.Task;
+import com.puban.overtime.task.service.INormalService;
+import com.puban.overtime.task.service.ITaskService;
+
+@Controller
+@RequestMapping("/task")
+public class TaskController extends BaseController
+{
+	@Autowired
+	private ITaskService taskService;
+	
+	@Autowired
+	private INormalService normalService;
+	
+	@RequestMapping("/list")
+	public void list(Model map)
+	{
+		taskService.queryTaskList();
+	}
+	
+	@RequestMapping("/add")
+	@ResponseBody
+	public String addTask(Task task)
+	{
+		if(taskService.saveNewTask(task))
+		{
+			return "success";
+		}
+		return null;
+	}
+	
+	/** 查找任务**/
+	@RequestMapping(value = "findtask", method = RequestMethod.POST, produces =  {"application/json;charset=UTF-8"})
+	@ResponseBody
+	public String findTask(Integer taskId)
+	{
+		if(null == taskId)
+		{
+			return null;
+		}
+		Task task = taskService.findByPrimaryKey(taskId);
+		return JSONObject.toJSONString(task);
+	}
+	
+	/** 新增正常任务**/
+	@RequestMapping(value = "/addnormal", method = RequestMethod.POST, produces =  {"application/json;charset=UTF-8"})
+	@ResponseBody
+	public String saveNormalTask(NormalTask task, HttpServletRequest req)
+	{
+		if(normalService.saveNormal(task))
+		{
+			return "success";
+		}
+		return null;
+	}
+	
+	/** 更新正常任务**/
+	@RequestMapping(value = "/updatenormal", method = RequestMethod.POST, produces =  {"application/json;charset=UTF-8"})
+	@ResponseBody
+	public String updateNormalTask(NormalTask task, HttpServletRequest req)
+	{
+		if(normalService.updateTaskByNormal(task))
+		{
+			return "success";
+		}
+		return null;
+	}
+	
+	/** 更新分配任务**/
+	@RequestMapping(value = "/updategive", method = RequestMethod.POST, produces =  {"application/json;charset=UTF-8"})
+	@ResponseBody
+	public String updateTask(Task task, HttpServletRequest req)
+	{
+		if(taskService.updateTaskByGive(task))
+		{
+			return "success";
+		}
+		return null;
+	}
+	
+	/** 该用户的正常任务**/
+	@RequestMapping("/listnormal")
+	public String listNormalByUser(Integer userId, Integer taskcurrentpage, Integer taskselectPageSize, Model model, HttpServletRequest request)
+	{
+		if(null == taskcurrentpage || taskcurrentpage < 1)
+		{
+			taskcurrentpage = 1;
+		}
+		if(null == taskselectPageSize || taskselectPageSize < 1)
+		{
+			taskselectPageSize = 5;
+		}
+		String loginName = (String) request.getSession(false).getAttribute("loginName");
+		if(null == loginName)
+		{
+			return null;
+		}
+		if(!"admin".equals(loginName))
+		{
+			userId = (Integer) request.getSession(false).getAttribute("loginId");
+			QueryResult<NormalTask> tasks = normalService.queryNormalListByUser(taskcurrentpage, taskselectPageSize, userId);
+			PageView<NormalTask> taskpageView = new PageView<NormalTask>(taskselectPageSize, taskcurrentpage);
+			taskpageView.setQueryResult(tasks);
+			model.addAttribute("taskpageView", taskpageView);
+			return "view/apply/normalList";
+		}
+		else
+		{
+			QueryResult<NormalTask> tasks = normalService.queryNormalListByUser(taskcurrentpage, taskselectPageSize, userId);
+			PageView<NormalTask> taskpageView = new PageView<NormalTask>(taskselectPageSize, taskcurrentpage);
+			taskpageView.setQueryResult(tasks);
+			model.addAttribute("taskpageView", taskpageView);
+			return "view/apply/normalList_admin";
+		}
+		
+	}
+	
+	/** 该用户已被分配的所有任务**/
+	@RequestMapping("/listgive")
+	public String listGiveByUser(Integer userId, Integer taskGivecurrentpage, Integer selecttaskGivePageSize, Model model, HttpServletRequest request)
+	{
+		if(null == taskGivecurrentpage || taskGivecurrentpage < 1)
+		{
+			taskGivecurrentpage = 1;
+		}
+		if(null == selecttaskGivePageSize || selecttaskGivePageSize < 1)
+		{
+			selecttaskGivePageSize = 5;
+		}
+		String loginName = (String) request.getSession(false).getAttribute("loginName");
+		if(null == loginName)
+		{
+			return null;
+		}
+		if(!"admin".equals(loginName))
+		{
+			userId = (Integer) request.getSession(false).getAttribute("loginId");
+			QueryResult<Task> tasks = taskService.queryMyTaskList(taskGivecurrentpage, selecttaskGivePageSize, userId);
+			PageView<Task> taskGivePageView = new PageView<Task>(selecttaskGivePageSize, taskGivecurrentpage);
+			taskGivePageView.setQueryResult(tasks);
+			model.addAttribute("taskGivePageView", taskGivePageView);
+			return "view/apply/giveList";
+		}
+		else
+		{
+			QueryResult<Task> tasks = taskService.queryMyTaskList(taskGivecurrentpage, selecttaskGivePageSize, userId);
+			PageView<Task> taskGivePageView = new PageView<Task>(selecttaskGivePageSize, taskGivecurrentpage);
+			taskGivePageView.setQueryResult(tasks);
+			model.addAttribute("taskGivePageView", taskGivePageView);
+			return "view/apply/giveList_admin";
+		}
+	}
+	
+	/** 该用户已被分配的所有任务，不分页 **/
+	@RequestMapping(value = "/listbyuser", method = RequestMethod.POST, produces =  {"application/json;charset=UTF-8"})
+	@ResponseBody
+	public String listByUser(HttpServletRequest request)
+	{
+		Integer userId = (Integer) request.getSession(false).getAttribute("loginId");
+		List<Task> tasks = new ArrayList<Task>();
+		tasks = taskService.queryMyTaskList(userId);
+		return JSONObject.toJSONString(tasks);
+	}
+	
+	/** 查询全部分配任务**/
+	@RequestMapping(value = "/giveall")
+	public String listGiveAll(Integer taskGivecurrentpage, Integer selecttaskGivePageSize, Model model)
+	{
+		if(null == taskGivecurrentpage || taskGivecurrentpage < 1)
+		{
+			taskGivecurrentpage = 1;
+		}
+		if(null == selecttaskGivePageSize || selecttaskGivePageSize < 1)
+		{
+			selecttaskGivePageSize = 5;
+		}
+		PageView<Task> taskGivePageView = taskService.queryGiveList(taskGivecurrentpage, selecttaskGivePageSize);
+		model.addAttribute("taskGivePageView", taskGivePageView);
+		return "view/apply/giveList_admin";
+	}
+	/** 展示全部正常任务**/
+	@RequestMapping(value = "/normalall")
+	public String listNoramlAll(Integer taskcurrentpage, Integer taskselectPageSize, Model model)
+	{
+		if(null == taskcurrentpage || taskcurrentpage < 1)
+		{
+			taskcurrentpage = 1;
+		}
+		if(null == taskselectPageSize || taskselectPageSize < 1)
+		{
+			taskselectPageSize = 5;
+		}
+		PageView<NormalTask> taskpageView = normalService.queryNormalList(taskcurrentpage, taskselectPageSize);
+		model.addAttribute("taskpageView", taskpageView);
+		return "view/apply/normalList_admin";
+	}
+	
+}

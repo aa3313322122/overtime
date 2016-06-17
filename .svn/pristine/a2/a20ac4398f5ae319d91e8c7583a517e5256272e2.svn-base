@@ -1,0 +1,160 @@
+package com.puban.overtime.apply.model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.puban.framework.core.model.BaseModel;
+
+
+@Entity
+@Table(name = "t_apply")
+public class Apply extends BaseModel
+{
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer fdId;
+	
+	/** 加班主题 **/
+	@Column(name = "fd_title")
+	private String fdTitle;
+	
+	/** 工作内容 **/
+	@Column(name = "fd_content")
+	private String fdContent;
+	
+	/** 开始时间 **/
+	@Column(name = "fd_start_time")
+	private Long  fdStartTime;
+	
+	/** 结束时间 **/
+	@Column(name = "fd_end_time")
+	private Long  fdEndTime;
+	
+	/** 加班耗时 **/
+	@Column(name = "fd_over_time")
+	private Long  fdOverTime;
+	
+	/** 是否通过审核 **/
+	@Column(name = "fd_check_flag")
+	private boolean  fdCheckFlag;
+	
+	/** 通过审核时间 **/
+	@Column(name = "fd_check_time")
+	private Long  fdCheckTime;
+	
+	/** 申请人**/
+//	@ManyToOne
+//	@JoinColumn(name = "account_id")
+//	private Account account;
+	
+	/** 加班申请创建时间**/
+	@Column(name = "fd_create_time")
+	private String  fdCreateTime;
+
+	public Integer getFdId()
+	{
+		return fdId;
+	}
+
+	public void setFdId(Integer fdId)
+	{
+		this.fdId = fdId;
+	}
+
+	public String getFdTitle()
+	{
+		return fdTitle;
+	}
+
+	public void setFdTitle(String fdTitle)
+	{
+		this.fdTitle = fdTitle;
+	}
+
+	public String getFdContent()
+	{
+		return fdContent;
+	}
+
+	public void setFdContent(String fdContent)
+	{
+		this.fdContent = fdContent;
+	}
+
+	public Long getFdStartTime()
+	{
+		return fdStartTime;
+	}
+
+	public void setFdStartTime(Long fdStartTime)
+	{
+		this.fdStartTime = fdStartTime;
+	}
+
+	public Long getFdEndTime()
+	{
+		return fdEndTime;
+	}
+
+	public void setFdEndTime(Long fdEndTime)
+	{
+		this.fdEndTime = fdEndTime;
+	}
+
+	public Long getFdOverTime()
+	{
+		return fdOverTime;
+	}
+
+	public void setFdOverTime(Long fdOverTime)
+	{
+		this.fdOverTime = fdOverTime;
+	}
+
+	public boolean isFdCheckFlag()
+	{
+		return fdCheckFlag;
+	}
+
+	public void setFdCheckFlag(boolean fdCheckFlag)
+	{
+		this.fdCheckFlag = fdCheckFlag;
+	}
+
+//	public Account getAccount()
+//	{
+//		return account;
+//	}
+//
+//	public void setAccount(Account account)
+//	{
+//		this.account = account;
+//	}
+
+	public String getFdCreateTime()
+	{
+		return fdCreateTime;
+	}
+
+	public void setFdCreateTime(String fdCreateTime)
+	{
+		this.fdCreateTime = fdCreateTime;
+	}
+
+	public Long getFdCheckTime()
+	{
+		return fdCheckTime;
+	}
+
+	public void setFdCheckTime(Long fdCheckTime)
+	{
+		this.fdCheckTime = fdCheckTime;
+	}
+	
+}
